@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Community Health Worker Assistance Platform — Comprehensive Documentation</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 18mm 15mm 18mm 15mm;
+      @bottom-right {
+        content: counter(page);
+      }
+    }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+      color: #1e293b;
+      line-height: 1.55;
+      font-size: 10pt;
+      margin: 0;
+      padding: 0;
+      background: #ffffff;
+    }
+
+    .cover-page {
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 90vh;
+      border-left: 6px solid #0d9488;
+      padding-left: 30px;
+    }
+
+    .badge-label {
+      display: inline-block;
+      background: #ccfbf1;
+      color: #0f766e;
+      font-weight: 700;
+      font-size: 9pt;
+      padding: 4px 10px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+    }
+
+    h1.project-title {
+      font-size: 26pt;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.15;
+      margin: 0 0 10px 0;
+    }
+
+    .subtitle {
+      font-size: 13pt;
+      color: #475569;
+      font-weight: 500;
+      margin: 0 0 35px 0;
+    }
+
+    .meta-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 20px;
+      max-width: 500px;
+      margin-top: 20px;
+    }
+
+    .meta-box table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .meta-box td {
+      padding: 5px 0;
+      font-size: 9.5pt;
+    }
+
+    .meta-box td.label {
+      font-weight: 600;
+      color: #64748b;
+      width: 130px;
+    }
+
+    .meta-box td.val {
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .page-break {
+      page-break-after: always;
+    }
+
+    h2 {
+      color: #0f766e;
+      font-size: 15pt;
+      font-weight: 700;
+      border-bottom: 2px solid #ccfbf1;
+      padding-bottom: 5px;
+      margin-top: 24pt;
+      margin-bottom: 12pt;
+    }
+
+    h3 {
+      color: #0f172a;
+      font-size: 11.5pt;
+      font-weight: 700;
+      margin-top: 16pt;
+      margin-bottom: 6pt;
+    }
+
+    p, li {
+      color: #334155;
+      font-size: 9.5pt;
+    }
+
+    ul, ol {
+      margin-top: 4px;
+      margin-bottom: 10px;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 18px 0;
+      font-size: 9pt;
+    }
+
+    table.data-table th {
+      background: #0f766e;
+      color: #ffffff;
+      font-weight: 600;
+      text-align: left;
+      padding: 7px 10px;
+      border: 1px solid #0d9488;
+    }
+
+    table.data-table td {
+      padding: 6px 10px;
+      border: 1px solid #e2e8f0;
+      vertical-align: top;
+    }
+
+    table.data-table tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .callout {
+      background: #f0fdfa;
+      border-left: 4px solid #0d9488;
+      border-radius: 4px;
+      padding: 10px 14px;
+      margin: 12px 0;
+    }
+
+    .callout p {
+      margin: 0;
+      color: #134e4a;
+      font-size: 9pt;
+      font-weight: 500;
+    }
+
+    .code-pill {
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: Consolas, monospace;
+      font-size: 8.5pt;
+      font-weight: 600;
+    }
+
+    .step-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+    }
+
+    .step-card strong.step-title {
+      color: #0f766e;
+      display: block;
+      font-size: 10pt;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- COVER PAGE -->
+  <div class="cover-page">
+    <span class="badge-label">B.Tech Final Year Engineering Project</span>
+    <h1 class="project-title">Community Health Worker (CHW)<br>Assistance Platform</h1>
+    <p class="subtitle">Complete Technical Architecture, Tech Stack, Schemas & Operational Guide</p>
+
+    <div class="meta-box">
+      <table>
+        <tr>
+          <td class="label">Project Title:</td>
+          <td class="val">Community Health Worker Assistance Platform</td>
+        </tr>
+        <tr>
+          <td class="label">Domain:</td>
+          <td class="val">Healthcare Informatics & Community Health Systems</td>
+        </tr>
+        <tr>
+          <td class="label">Target Audience:</td>
+          <td class="val">Community Health Workers (ASHA / ANM / Primary Care)</td>
+        </tr>
+        <tr>
+          <td class="label">Architecture:</td>
+          <td class="val">Client-Server (RESTful API + Single Page Application)</td>
+        </tr>
+        <tr>
+          <td class="label">Status:</td>
+          <td class="val">Working Implementation (Auth, Patients, Appointments, Vitals)</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 1 -->
+  <h2>1. Executive Summary & Problem Statement</h2>
+  <p>
+    In rural and suburban primary healthcare ecosystems, Community Health Workers (CHWs, ASHAs, and ANMs) serve as the primary lifeline for frontline healthcare delivery. However, most health workers rely on manual paper registers, leading to data fragmentation, lost immunization records, unmonitored high-risk pregnancies, and lack of real-time clinical oversight.
+  </p>
+  <p>
+    The <strong>Community Health Worker Assistance Platform</strong> is a modern, responsive digital health platform built to digitize community healthcare operations. It empowers health workers to:
+  </p>
+  <ul>
+    <li>Register and maintain digital health demographic profiles for community members.</li>
+    <li>Schedule, prioritize, and track home visits, immunization schedules, and clinic appointments.</li>
+    <li>Record clinical vitals (Blood Pressure, Heart Rate, Temperature, SpO2, Blood Glucose, Weight) and diagnose common ailments.</li>
+    <li>Generate structured medication prescriptions and treatment plans.</li>
+    <li>Maintain patient security and account privacy via role-based access control and two-factor OTP verification.</li>
+  </ul>
+
+  <!-- SECTION 2 -->
+  <h2>2. Complete Technology Stack</h2>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th style="width: 25%;">Layer / Domain</th>
+        <th style="width: 35%;">Technology</th>
+        <th style="width: 40%;">Role in Platform</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Frontend Framework</strong></td>
+        <td>React.js 18.x (SPA)</td>
+        <td>Modular component-driven UI with state management and live DOM rendering.</td>
+      </tr>
+      <tr>
+        <td><strong>Build Tool & Bundler</strong></td>
+        <td>Vite 8.x</td>
+        <td>Ultra-fast HMR (Hot Module Replacement) and optimized production compilation.</td>
+      </tr>
+      <tr>
+        <td><strong>Client Routing</strong></td>
+        <td>React Router DOM v6</td>
+        <td>Client-side routing with JWT-protected route guards (<span class="code-pill">ProtectedRoute</span>).</td>
+      </tr>
+      <tr>
+        <td><strong>HTTP Client</strong></td>
+        <td>Axios with Interceptors</td>
+        <td>REST API communication; automatically injects Bearer JWT into request headers.</td>
+      </tr>
+      <tr>
+        <td><strong>Frontend Styling</strong></td>
+        <td>Pure Vanilla CSS & CSS3 Variables</td>
+        <td>Modern healthcare aesthetic, glassmorphism, responsive grids, and zero third-party CSS bloat.</td>
+      </tr>
+      <tr>
+        <td><strong>Backend Runtime</strong></td>
+        <td>Node.js (ES Modules)</td>
+        <td>Asynchronous, non-blocking I/O event-driven server runtime.</td>
+      </tr>
+      <tr>
+        <td><strong>Web Framework</strong></td>
+        <td>Express.js 4.x</td>
+        <td>RESTful API routing, JSON body parsing, CORS policies, and error handling.</td>
+      </tr>
+      <tr>
+        <td><strong>Database & ODM</strong></td>
+        <td>MongoDB & Mongoose ODM</td>
+        <td>Document-oriented NoSQL database with strict schema validation and relationship population.</td>
+      </tr>
+      <tr>
+        <td><strong>Authentication</strong></td>
+        <td>JWT (JSON Web Tokens)</td>
+        <td>Stateless authorization with cryptographic signature verification (<span class="code-pill">jsonwebtoken</span>).</td>
+      </tr>
+      <tr>
+        <td><strong>Password Hashing</strong></td>
+        <td>Bcrypt.js (10 salt rounds)</td>
+        <td>One-way cryptographic salt hashing before saving user credentials to DB.</td>
+      </tr>
+      <tr>
+        <td><strong>OTP & Mailer</strong></td>
+        <td>Nodemailer (SMTP / Gmail)</td>
+        <td>Automated email dispatch of 6-digit one-time verification passwords.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SECTION 3 -->
+  <div class="page-break"></div>
+  <h2>3. System Architecture & Component Interactions</h2>
+  <div class="callout">
+    <p><strong>Architecture Pattern:</strong> 3-Tier Layered Architecture consisting of Presentation Layer (React), Business Logic / API Layer (Express Services & Controllers), and Data Layer (MongoDB Atlas / Local).</p>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Component</th>
+        <th>Path in Codebase</th>
+        <th>Core Responsibility</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Entry Server</strong></td>
+        <td><span class="code-pill">backend/src/server.js</span></td>
+        <td>Connects to MongoDB and starts Express HTTP listener on Port 5000.</td>
+      </tr>
+      <tr>
+        <td><strong>Express App</strong></td>
+        <td><span class="code-pill">backend/src/app.js</span></td>
+        <td>Configures CORS, JSON parsers, Morgan logging, and registers API routers.</td>
+      </tr>
+      <tr>
+        <td><strong>Auth Routes & Service</strong></td>
+        <td><span class="code-pill">backend/src/routes/authRoutes.js</span></td>
+        <td>OTP generation, email verification, worker registration, and JWT token issuance.</td>
+      </tr>
+      <tr>
+        <td><strong>Patient Controller</strong></td>
+        <td><span class="code-pill">backend/src/controllers/patientController.js</span></td>
+        <td>CRUD operations, search regex indexing (Name, Phone, Village, District).</td>
+      </tr>
+      <tr>
+        <td><strong>Appointment Controller</strong></td>
+        <td><span class="code-pill">backend/src/controllers/appointmentController.js</span></td>
+        <td>Scheduling, date/priority filtering, status updates (SCHEDULED, COMPLETED).</td>
+      </tr>
+      <tr>
+        <td><strong>Health Record Controller</strong></td>
+        <td><span class="code-pill">backend/src/controllers/healthRecordController.js</span></td>
+        <td>Vitals tracking, clinical diagnosis, prescriptions, and historical timelines.</td>
+      </tr>
+      <tr>
+        <td><strong>User Controller</strong></td>
+        <td><span class="code-pill">backend/src/controllers/userController.js</span></td>
+        <td>Profile access and secure password changing with bcrypt hash verification.</td>
+      </tr>
+      <tr>
+        <td><strong>Auth & Role Middleware</strong></td>
+        <td><span class="code-pill">backend/src/middleware/</span></td>
+        <td>JWT bearer token validation (<span class="code-pill">protect</span>) and role guards (<span class="code-pill">authorize</span>).</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SECTION 4 -->
+  <h2>4. Database Schema Specifications</h2>
+
+  <h3>4.1 User Schema (Health Workers & Admins)</h3>
+  <ul>
+    <li><span class="code-pill">fullName</span> (String, required, trimmed)</li>
+    <li><span class="code-pill">email</span> (String, required, unique, lowercase)</li>
+    <li><span class="code-pill">password</span> (String, minlength: 6, hashed with bcrypt)</li>
+    <li><span class="code-pill">phone</span> (String, required)</li>
+    <li><span class="code-pill">role</span> (Enum: "SUPER_ADMIN", "ADMIN", "WORKER", default: "WORKER")</li>
+    <li><span class="code-pill">isEmailVerified</span> (Boolean, set to true after valid OTP)</li>
+    <li><span class="code-pill">isApproved</span> (Boolean, auto-approved for frictionless onboarding)</li>
+  </ul>
+
+  <h3>4.2 Patient Schema</h3>
+  <ul>
+    <li><span class="code-pill">fullName</span> (String, required), <span class="code-pill">age</span> (Number, 0-120), <span class="code-pill">gender</span> (Enum: "MALE", "FEMALE", "OTHER")</li>
+    <li><span class="code-pill">phone</span> (String, required), <span class="code-pill">email</span> (String)</li>
+    <li><span class="code-pill">address</span>, <span class="code-pill">village</span>, <span class="code-pill">district</span>, <span class="code-pill">state</span>, <span class="code-pill">pincode</span></li>
+    <li><span class="code-pill">emergencyContactName</span>, <span class="code-pill">emergencyContactPhone</span></li>
+    <li><span class="code-pill">bloodGroup</span> (A+, A-, B+, B-, AB+, AB-, O+, O-)</li>
+    <li><span class="code-pill">allergies</span>, <span class="code-pill">existingConditions</span></li>
+    <li><span class="code-pill">registeredBy</span> (ObjectId ref: 'User', audit trail)</li>
+    <li><span class="code-pill">status</span> (Enum: "ACTIVE", "INACTIVE", default: "ACTIVE")</li>
+  </ul>
+
+  <h3>4.3 Appointment Schema</h3>
+  <ul>
+    <li><span class="code-pill">patient</span> (ObjectId ref: 'Patient', required)</li>
+    <li><span class="code-pill">worker</span> (ObjectId ref: 'User', required)</li>
+    <li><span class="code-pill">appointmentDate</span> (Date, required), <span class="code-pill">timeSlot</span> (String, e.g. "10:00 AM")</li>
+    <li><span class="code-pill">purpose</span> (String, e.g. "Antenatal Care", "Child Immunization")</li>
+    <li><span class="code-pill">priority</span> (Enum: "LOW", "MEDIUM", "HIGH", "URGENT")</li>
+    <li><span class="code-pill">location</span> (e.g. "Community Health Center", "Village Anganwadi", "Home Visit")</li>
+    <li><span class="code-pill">status</span> (Enum: "SCHEDULED", "COMPLETED", "CANCELLED", "MISSED")</li>
+    <li><span class="code-pill">notes</span>, <span class="code-pill">followUpDate</span></li>
+  </ul>
+
+  <h3>4.4 Health Record Schema</h3>
+  <ul>
+    <li><span class="code-pill">patient</span> (ObjectId ref: 'Patient'), <span class="code-pill">recordedBy</span> (ObjectId ref: 'User')</li>
+    <li><span class="code-pill">recordType</span> (GENERAL_CHECKUP, VITALS, ANTENATAL_CARE, IMMUNIZATION, DIAGNOSIS, PRESCRIPTION, LAB_TEST)</li>
+    <li><span class="code-pill">vitals</span>: bloodPressure, heartRate (bpm), temperature (°F), spO2 (%), bloodGlucose (mg/dL), weight (kg), height (cm)</li>
+    <li><span class="code-pill">symptoms</span>, <span class="code-pill">diagnosis</span>, <span class="code-pill">treatmentPlan</span></li>
+    <li><span class="code-pill">medications</span>: Array of <span class="code-pill">{ name, dosage, frequency, duration }</span></li>
+  </ul>
+
+  <!-- SECTION 5 -->
+  <div class="page-break"></div>
+  <h2>5. Point-to-Point Operational Workflows</h2>
+
+  <div class="step-card">
+    <strong class="step-title">Step 1: Health Worker Registration & Verification</strong>
+    <p>
+      1. User navigates to <span class="code-pill">/register</span> and enters Full Name, Email, Phone, and Password.<br>
+      2. The frontend triggers <span class="code-pill">POST /api/auth/send-otp</span>.<br>
+      3. The backend generates a cryptographically secure 6-digit numeric OTP and emails it via Nodemailer.<br>
+      4. User enters the OTP at <span class="code-pill">/verify-otp</span>.<br>
+      5. The backend validates OTP expiration (10 min TTL), registers the account with hashed password, and grants active status.
+    </p>
+  </div>
+
+  <div class="step-card">
+    <strong class="step-title">Step 2: Authentication & Session Initialization</strong>
+    <p>
+      1. User enters Email and Password at <span class="code-pill">/login</span>.<br>
+      2. Backend validates credentials via bcrypt, generates a signed JWT token containing user ID & role.<br>
+      3. Frontend stores <span class="code-pill">token</span> and <span class="code-pill">user</span> in browser <span class="code-pill">localStorage</span>.<br>
+      4. Axios HTTP interceptor automatically attaches <span class="code-pill">Authorization: Bearer &lt;token&gt;</span> to all subsequent requests.
+    </p>
+  </div>
+
+  <div class="step-card">
+    <strong class="step-title">Step 3: Dashboard Analytics & Navigation</strong>
+    <p>
+      1. Dashboard fetches live data via concurrent <span class="code-pill">Promise.allSettled</span> calls to <span class="code-pill">/patients</span>, <span class="code-pill">/appointments</span>, and <span class="code-pill">/health-records</span>.<br>
+      2. Calculates Total Patients, Active Patients, Female vs Male count, Scheduled Visits, and Clinical Records.<br>
+      3. Interactive stat cards allow direct one-click navigation to respective management modules.
+    </p>
+  </div>
+
+  <div class="step-card">
+    <strong class="step-title">Step 4: Patient Lifecycle Management</strong>
+    <p>
+      1. <strong>Registration:</strong> Clicking "Register Patient" opens a comprehensive modal with demographic, contact, emergency, and health background fields.<br>
+      2. <strong>Persistence:</strong> Dispatches <span class="code-pill">POST /api/patients</span>; record stored directly in MongoDB.<br>
+      3. <strong>Search:</strong> Live server-side search querying Full Name, Phone, Village, and District using regex.<br>
+      4. <strong>Editing:</strong> In-place modal editing updates patient attributes via <span class="code-pill">PUT /api/patients/:id</span>.<br>
+      5. <strong>Deep Linking:</strong> In the patient view modal, health workers can click "Schedule Visit" or "Add Health Record" to immediately start clinical operations for that patient.
+    </p>
+  </div>
+
+  <div class="step-card">
+    <strong class="step-title">Step 5: Appointment Scheduling & Follow-Up</strong>
+    <p>
+      1. Worker opens the Appointments page and clicks "Schedule New Appointment".<br>
+      2. Selects patient from dropdown, picks visit date, time slot, location, priority (Urgent, High, Medium, Low), and reason tags (e.g. Antenatal Care, Immunization, BP & Sugar).<br>
+      3. Backend saves the appointment and returns populated patient data.<br>
+      4. Worker can filter appointments by Status (Scheduled, Completed, Cancelled) or Priority.<br>
+      5. One-click "✓ Complete" button instantly updates visit status in MongoDB.
+    </p>
+  </div>
+
+  <div class="step-card">
+    <strong class="step-title">Step 6: Clinical Health Records & Vitals Logging</strong>
+    <p>
+      1. Worker logs vitals: Blood Pressure, Pulse, Temperature, Oxygen SpO2, Blood Glucose, and Weight.<br>
+      2. Categorizes record type (General Checkup, Vitals, Antenatal Care, Immunization, etc.).<br>
+      3. Enters clinical observations: Symptoms, Diagnosis, and Treatment Plan.<br>
+      4. Dynamic Prescription builder: Worker clicks "+ Add Medicine" to prescribe multiple drugs with dosage, frequency, and duration.<br>
+      5. Records are displayed in structured cards with vital indicator pills and expandable clinical detail modals.
+    </p>
+  </div>
+
+  <div class="step-card">
+    <strong class="step-title">Step 7: Account Security & Change Password</strong>
+    <p>
+      1. User clicks the "🔑 Password" button located in the global header.<br>
+      2. Enters Current Password, New Password, and Confirm Password with eye visibility toggles.<br>
+      3. Frontend validates minimum 6 characters and password matching.<br>
+      4. Backend verifies current password hash via <span class="code-pill">user.comparePassword()</span> and updates it with an auto-generated fresh bcrypt hash.
+    </p>
+  </div>
+
+  <!-- SECTION 6 -->
+  <h2>6. Summary of API Endpoints</h2>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Method</th>
+        <th>Endpoint</th>
+        <th>Auth Required</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>POST</td><td><span class="code-pill">/api/auth/send-otp</span></td><td>No</td><td>Dispatches 6-digit OTP to user email</td></tr>
+      <tr><td>POST</td><td><span class="code-pill">/api/auth/verify-otp</span></td><td>No</td><td>Verifies OTP & activates user</td></tr>
+      <tr><td>POST</td><td><span class="code-pill">/api/auth/register</span></td><td>No</td><td>Registers new health worker</td></tr>
+      <tr><td>POST</td><td><span class="code-pill">/api/auth/login</span></td><td>No</td><td>Authenticates user & returns JWT</td></tr>
+      <tr><td>GET</td><td><span class="code-pill">/api/patients</span></td><td>Yes</td><td>Retrieves all registered patients</td></tr>
+      <tr><td>POST</td><td><span class="code-pill">/api/patients</span></td><td>Yes</td><td>Registers a new patient</td></tr>
+      <tr><td>GET</td><td><span class="code-pill">/api/patients/search?q=</span></td><td>Yes</td><td>Multi-field search across patients</td></tr>
+      <tr><td>PUT</td><td><span class="code-pill">/api/patients/:id</span></td><td>Yes</td><td>Updates existing patient details</td></tr>
+      <tr><td>GET</td><td><span class="code-pill">/api/appointments</span></td><td>Yes</td><td>Lists appointments with filters</td></tr>
+      <tr><td>POST</td><td><span class="code-pill">/api/appointments</span></td><td>Yes</td><td>Schedules a new visit/appointment</td></tr>
+      <tr><td>PUT</td><td><span class="code-pill">/api/appointments/:id</span></td><td>Yes</td><td>Updates appointment status/details</td></tr>
+      <tr><td>GET</td><td><span class="code-pill">/api/health-records</span></td><td>Yes</td><td>Retrieves clinical & vitals records</td></tr>
+      <tr><td>POST</td><td><span class="code-pill">/api/health-records</span></td><td>Yes</td><td>Logs vitals, diagnosis & medications</td></tr>
+      <tr><td>PUT</td><td><span class="code-pill">/api/users/change-password</span></td><td>Yes</td><td>Validates current & sets new password</td></tr>
+    </tbody>
+  </table>
+
+</body>
+</html>

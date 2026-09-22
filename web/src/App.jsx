@@ -1,122 +1,261 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React, { useState, useEffect } from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 
-function App() {
-  const [count, setCount] = useState(0)
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import PatientManagement from "./pages/PatientManagement";
+import Appointments from "./pages/Appointments";
+import HealthRecords from "./pages/HealthRecords";
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+import "./App.css";
 
-      <div className="ticks"></div>
+/* =====================================================
+   PROTECTED ROUTE
+   Uses JWT token presence for authentication check
+===================================================== */
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+function ProtectedRoute({ children }) {
+  const token = localStorage.getItem("token");
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
 }
 
-export default App
+/* =====================================================
+   APPLICATION CONTENT
+===================================================== */
+
+function AppContent() {
+  const navigate = useNavigate();
+
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    !!localStorage.getItem("token")
+  );
+
+  /* Keep authentication state synchronized */
+  useEffect(() => {
+    const checkLogin = () => {
+      setIsLoggedIn(!!localStorage.getItem("token"));
+    };
+
+    window.addEventListener("storage", checkLogin);
+
+    return () => {
+      window.removeEventListener("storage", checkLogin);
+    };
+  }, []);
+
+  /* =====================================================
+     LOGIN
+  ===================================================== */
+
+  const handleLogin = (userData, token) => {
+    // Store JWT token
+    if (token) {
+      localStorage.setItem("token", token);
+    }
+
+    // Store user info
+    if (userData) {
+      localStorage.setItem(
+        "user",
+        JSON.stringify(userData)
+      );
+    }
+
+    // Keep isLoggedIn for backwards compat
+    localStorage.setItem("isLoggedIn", "true");
+
+    setIsLoggedIn(true);
+
+    navigate("/dashboard", {
+      replace: true,
+    });
+  };
+
+  /* =====================================================
+     LOGOUT
+  ===================================================== */
+
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    setIsLoggedIn(false);
+
+    navigate("/login", {
+      replace: true,
+    });
+  };
+
+  /* =====================================================
+     REGISTER COMPLETE
+  ===================================================== */
+
+  const handleRegisterComplete = () => {
+    navigate("/login", {
+      replace: true,
+    });
+  };
+
+  return (
+    <Routes>
+
+      {/* ===============================================
+          HOME
+      =============================================== */}
+
+      <Route
+        path="/"
+        element={
+          isLoggedIn ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      {/* ===============================================
+          LOGIN
+      =============================================== */}
+
+      <Route
+        path="/login"
+        element={
+          isLoggedIn ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
+            <Login onLogin={handleLogin} />
+          )
+        }
+      />
+
+      {/* ===============================================
+          CREATE ACCOUNT / REGISTER
+      =============================================== */}
+
+      <Route
+        path="/register"
+        element={
+          isLoggedIn ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
+            <Register
+              onLogin={() => navigate("/login")}
+              onRegisterComplete={
+                handleRegisterComplete
+              }
+            />
+          )
+        }
+      />
+
+      {/* ===============================================
+          DASHBOARD
+      =============================================== */}
+
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ===============================================
+          PATIENT MANAGEMENT
+      =============================================== */}
+
+      <Route
+        path="/patients"
+        element={
+          <ProtectedRoute>
+            <PatientManagement onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Alternative URL */}
+      <Route
+        path="/patient-management"
+        element={
+          <ProtectedRoute>
+            <PatientManagement onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ===============================================
+          APPOINTMENTS MANAGEMENT
+      =============================================== */}
+
+      <Route
+        path="/appointments"
+        element={
+          <ProtectedRoute>
+            <Appointments onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ===============================================
+          HEALTH RECORDS
+      =============================================== */}
+
+      <Route
+        path="/health-records"
+        element={
+          <ProtectedRoute>
+            <HealthRecords onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ===============================================
+          UNKNOWN ROUTE
+      =============================================== */}
+
+      <Route
+        path="*"
+        element={
+          <Navigate
+            to={
+              isLoggedIn
+                ? "/dashboard"
+                : "/login"
+            }
+            replace
+          />
+        }
+      />
+
+    </Routes>
+  );
+}
+
+/* =====================================================
+   APP
+===================================================== */
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
+  );
+}
+
+export default App;

@@ -1,4 +1,4 @@
-import User from "../models/User.js";
+import User from "../models/user.js";
 import {
   validateVerificationToken,
   deleteVerificationToken,
@@ -31,7 +31,7 @@ export const registerUser = async ({
     password,
     role: "WORKER",
     isEmailVerified: true,
-    isApproved: false,
+    isApproved: true,
   });
 
   await deleteVerificationToken(email);
@@ -54,12 +54,6 @@ export const loginUser = async ({
 
   if (!isMatch) {
     throw new Error("Invalid email or password");
-  }
-
-  if (!user.isApproved) {
-    throw new Error(
-      "Your account is awaiting admin approval"
-    );
   }
 
   const token = generateJWT(user);

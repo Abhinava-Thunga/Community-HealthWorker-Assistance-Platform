@@ -3,55 +3,120 @@ import generateOTP from "../utils/generateOTP.js";
 import sendEmail from "./emailService.js";
 
 /**
+ * Normalize email
+ */
+const normalizeEmail = (email) => {
+  return String(email || "")
+    .trim()
+    .toLowerCase();
+};
+
+/**
+ * Normalize OTP
+ */
+const normalizeOTP = (otp) => {
+  return String(otp || "")
+    .trim()
+    .replace(/\s/g, "");
+};
+
+/**
  * Generate and Send OTP
  */
 export const sendOTP = async (
   email,
   purpose = "REGISTER"
 ) => {
+  const normalizedEmail = normalizeEmail(email);
 
-  // Delete old OTPs
+  if (!normalizedEmail) {
+    throw new Error("Email is required");
+  }
+
+  // ----------------------------------------------------------
+  // Delete any previous OTPs for this email and purpose
+  // ----------------------------------------------------------
+
   await OTP.deleteMany({
-    email,
+    email: normalizedEmail,
     purpose,
   });
 
-  // Generate new OTP
-  const otp = generateOTP();
+  // ----------------------------------------------------------
+  // Generate OTP
+  // ----------------------------------------------------------
 
-  // OTP expires in 5 minutes
+  const generatedOTP = generateOTP();
+
+  // Always store OTP as a string
+  const otp = normalizeOTP(generatedOTP);
+
+  if (!otp) {
+    throw new Error("Unable to generate OTP");
+  }
+
+  // ----------------------------------------------------------
+  // OTP expires after 5 minutes
+  // ----------------------------------------------------------
+
   const expiresAt = new Date(
     Date.now() + 5 * 60 * 1000
   );
 
-  // Save OTP
+  // ----------------------------------------------------------
+  // Save OTP to MongoDB
+  // ----------------------------------------------------------
+
   await OTP.create({
-    email,
-    otp,
+    email: normalizedEmail,
+    otp: otp,
     purpose,
     expiresAt,
   });
 
-  // Send Email
+  // ----------------------------------------------------------
+  // Send OTP email
+  // ----------------------------------------------------------
+
   await sendEmail(
-    email,
+    normalizedEmail,
     "Community Health Worker Assistance Platform - Email Verification",
     `
-      <div style="font-family: Arial, sans-serif; line-height:1.6;">
+      <div style="
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+      ">
+
         <h2 style="color:#0d6efd;">
           Community Health Worker Assistance Platform
         </h2>
 
         <p>Hello,</p>
 
-        <p>Your One-Time Password (OTP) is:</p>
+        <p>
+          Your One-Time Password (OTP) for email verification is:
+        </p>
 
-        <h1 style="
-          letter-spacing:6px;
-          color:#0d6efd;
+        <div style="
+          background:#f4f7fb;
+          padding:20px;
+          text-align:center;
+          border-radius:10px;
+          margin:20px 0;
         ">
-          ${otp}
-        </h1>
+
+          <h1 style="
+            letter-spacing:8px;
+            color:#0d6efd;
+            margin:0;
+          ">
+            ${otp}
+          </h1>
+
+        </div>
 
         <p>
           This OTP is valid for
@@ -71,13 +136,14 @@ export const sendOTP = async (
         <strong>
           Community Health Worker Assistance Platform
         </strong>
+
       </div>
     `
   );
 
   return true;
-
 };
+
 
 /**
  * Verify OTP
@@ -88,30 +154,69 @@ export const verifyOTP = async (
   purpose = "REGISTER"
 ) => {
 
-  const otpDocument = await OTP.findOne({
-    email,
-    otp,
-    purpose,
-  });
+  const normalizedEmail = normalizeEmail(email);
+  const normalizedOTP = normalizeOTP(otp);
 
-  if (!otpDocument) {
-    throw new Error("Invalid OTP");
+  if (!normalizedEmail || !normalizedOTP) {
+    throw new Error("Email and OTP are required");
   }
 
-  if (otpDocument.expiresAt < new Date()) {
+  // ----------------------------------------------------------
+  // IMPORTANT:
+  // Get the latest OTP for this email first.
+  // ----------------------------------------------------------
+
+  const otpDocument = await OTP.findOne({
+    email: normalizedEmail,
+    purpose,
+  })
+    .sort({ createdAt: -1 });
+
+  // No OTP found
+  if (!otpDocument) {
+    throw new Error(
+      "No OTP found. Please request a new OTP."
+    );
+  }
+
+  // ----------------------------------------------------------
+  // Check expiration
+  // ----------------------------------------------------------
+
+  if (
+    !otpDocument.expiresAt ||
+    otpDocument.expiresAt.getTime() < Date.now()
+  ) {
 
     await OTP.deleteOne({
       _id: otpDocument._id,
     });
 
-    throw new Error("OTP Expired");
+    throw new Error(
+      "OTP has expired. Please request a new OTP."
+    );
   }
 
-  // Delete used OTP
+  // ----------------------------------------------------------
+  // Compare OTP as strings
+  // ----------------------------------------------------------
+
+  const savedOTP = normalizeOTP(
+    otpDocument.otp
+  );
+
+  if (savedOTP !== normalizedOTP) {
+    throw new Error("Invalid OTP");
+  }
+
+  // ----------------------------------------------------------
+  // OTP is correct
+  // Delete it so it cannot be reused
+  // ----------------------------------------------------------
+
   await OTP.deleteOne({
     _id: otpDocument._id,
   });
 
   return true;
-
 };

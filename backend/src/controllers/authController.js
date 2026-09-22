@@ -12,14 +12,14 @@ import {
   loginUser,
 } from "../services/authService.js";
 
-// ==============================
-// Send OTP
-// ==============================
+// ======================================================
+// SEND OTP
+// ======================================================
 export const sendOTPController = async (req, res) => {
   try {
+    let { email } = req.body;
 
-    const { email } = req.body;
-
+    // Validate email
     if (!email) {
       return res.status(400).json({
         success: false,
@@ -27,50 +27,74 @@ export const sendOTPController = async (req, res) => {
       });
     }
 
-    await sendOTP(email.toLowerCase());
+    // Normalize email
+    email = email.trim().toLowerCase();
+
+    // Send REGISTER OTP
+    await sendOTP(email, "REGISTER");
 
     return res.status(200).json({
       success: true,
       message: "OTP sent successfully",
+      email,
     });
 
   } catch (error) {
+    console.error("Send OTP Error:", error);
 
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message:
+        error.message || "Unable to send OTP",
     });
-
   }
 };
 
-// ==============================
-// Verify OTP
-// ==============================
+
+// ======================================================
+// VERIFY OTP
+// ======================================================
 export const verifyOTPController = async (req, res) => {
-
   try {
+    let { email, otp } = req.body;
 
-    const { email, otp } = req.body;
-
+    // Validate
     if (!email || !otp) {
-
       return res.status(400).json({
         success: false,
         message: "Email and OTP are required",
       });
-
     }
 
+    // Normalize values
+    email = email.trim().toLowerCase();
+    otp = String(otp).trim();
+
+    // OTP must be exactly 6 digits
+    if (!/^\d{6}$/.test(otp)) {
+      return res.status(400).json({
+        success: false,
+        message: "OTP must be a 6-digit number",
+      });
+    }
+
+    console.log("========== OTP VERIFICATION ==========");
+    console.log("Email:", email);
+    console.log("OTP:", otp);
+    console.log("Purpose:", "REGISTER");
+
+    // Verify OTP
     await verifyOTP(
-      email.toLowerCase(),
-      otp
+      email,
+      otp,
+      "REGISTER"
     );
 
+    // Create verification token
     const verificationToken =
-      await createVerificationToken(
-        email.toLowerCase()
-      );
+      await createVerificationToken(email);
+
+    console.log("OTP verification successful");
 
     return res.status(200).json({
       success: true,
@@ -79,27 +103,29 @@ export const verifyOTPController = async (req, res) => {
     });
 
   } catch (error) {
+    console.error(
+      "OTP Verification Error:",
+      error
+    );
 
     return res.status(400).json({
       success: false,
-      message: error.message,
+      message:
+        error.message || "Invalid OTP",
     });
-
   }
-
 };
 
-// ==============================
-// Register
-// ==============================
+
+// ======================================================
+// REGISTER
+// ======================================================
 export const registerController = async (
   req,
   res
 ) => {
-
   try {
-
-    const {
+    let {
       fullName,
       email,
       phone,
@@ -107,6 +133,7 @@ export const registerController = async (
       verificationToken,
     } = req.body;
 
+    // Validate required fields
     if (
       !fullName ||
       !email ||
@@ -114,17 +141,22 @@ export const registerController = async (
       !password ||
       !verificationToken
     ) {
-
       return res.status(400).json({
         success: false,
-        message: "All fields are required",
+        message:
+          "All fields are required",
       });
-
     }
 
+    // Normalize data
+    fullName = fullName.trim();
+    email = email.trim().toLowerCase();
+    phone = phone.trim();
+
+    // Register user
     const user = await registerUser({
       fullName,
-      email: email.toLowerCase(),
+      email,
       phone,
       password,
       verificationToken,
@@ -133,6 +165,7 @@ export const registerController = async (
     return res.status(201).json({
       success: true,
       message: "Registration successful",
+
       user: {
         id: user._id,
         fullName: user.fullName,
@@ -142,49 +175,58 @@ export const registerController = async (
     });
 
   } catch (error) {
+    console.error(
+      "Registration Error:",
+      error
+    );
 
     return res.status(400).json({
       success: false,
-      message: error.message,
+      message:
+        error.message ||
+        "Registration failed",
     });
-
   }
-
 };
 
-// ==============================
-// Login
-// ==============================
+
+// ======================================================
+// LOGIN
+// ======================================================
 export const loginController = async (
   req,
   res
 ) => {
-
   try {
-
-    const {
+    let {
       email,
       password,
     } = req.body;
 
+    // Validate
     if (!email || !password) {
-
       return res.status(400).json({
         success: false,
-        message: "Email and password are required",
+        message:
+          "Email and password are required",
       });
-
     }
 
+    // Normalize email
+    email = email.trim().toLowerCase();
+
+    // Login
     const result = await loginUser({
-      email: email.toLowerCase(),
+      email,
       password,
     });
 
     return res.status(200).json({
       success: true,
       message: "Login successful",
+
       token: result.token,
+
       user: {
         id: result.user._id,
         fullName: result.user.fullName,
@@ -194,12 +236,16 @@ export const loginController = async (
     });
 
   } catch (error) {
+    console.error(
+      "Login Error:",
+      error
+    );
 
     return res.status(400).json({
       success: false,
-      message: error.message,
+      message:
+        error.message ||
+        "Login failed",
     });
-
   }
-
 };

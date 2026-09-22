@@ -1,0 +1,373 @@
+/* =========================================================
+   HEALTH RECORDS MANAGEMENT CSS
+   ========================================================= */
+
+.health-records-page {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  color: #1e293b;
+}
+
+.records-main {
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* Hero */
+.records-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%);
+  padding: 2rem 2.5rem;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+.records-hero .hero-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #059669;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+}
+
+.records-hero h2 {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 0.5rem 0;
+}
+
+.records-hero p {
+  font-size: 0.95rem;
+  color: #64748b;
+  max-width: 650px;
+  margin: 0;
+}
+
+/* Record Stat Cards */
+.record-stat-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.icon-teal { background: #ccfbf1; }
+.icon-purple { background: #f3e8ff; }
+.icon-emerald { background: #d1fae5; }
+
+/* Grid of Record Cards */
+.records-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.5rem;
+}
+
+.record-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.record-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.08);
+  border-color: #cbd5e1;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.type-tag {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.725rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.type-general_checkup { background: #e0f2fe; color: #0284c7; }
+.type-vitals { background: #fef3c7; color: #d97706; }
+.type-antenatal_care { background: #fce7f3; color: #db2777; }
+.type-immunization { background: #dcfce7; color: #16a34a; }
+.type-diagnosis { background: #ede9fe; color: #7c3aed; }
+.type-prescription { background: #ffedd5; color: #ea580c; }
+.type-lab_test { background: #e2e8f0; color: #475569; }
+
+.record-date {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.patient-heading h4 {
+  font-size: 1.15rem;
+  margin: 0 0 0.2rem 0;
+  color: #0f172a;
+}
+
+.patient-heading span {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* Vitals Row & Pills */
+.vitals-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  background: #f8fafc;
+  padding: 0.6rem;
+  border-radius: 8px;
+}
+
+.vital-pill {
+  font-size: 0.75rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  padding: 0.2rem 0.5rem;
+  border-radius: 5px;
+  color: #475569;
+}
+
+.vital-pill strong {
+  color: #0d9488;
+}
+
+.diagnosis-preview,
+.symptoms-preview {
+  font-size: 0.85rem;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.meds-preview {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #059669;
+  background: #f0fdf4;
+  border: 1px solid #dcfce7;
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 0.75rem;
+  margin-top: auto;
+}
+
+.author-text {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.view-record-btn {
+  background: none;
+  border: none;
+  color: #0d9488;
+  font-size: 0.825rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+}
+
+.view-record-btn:hover {
+  text-decoration: underline;
+}
+
+/* Wide Modal Styles */
+.wide-modal {
+  max-width: 780px !important;
+}
+
+.form-section-title {
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 0.4rem;
+  margin-top: 0.6rem;
+}
+
+.form-section-title span {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0f766e;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.vitals-inputs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.85rem;
+}
+
+.med-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.add-med-btn {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #059669;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.medication-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.medication-row input {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.825rem;
+}
+
+.remove-med-btn {
+  background: #fee2e2;
+  border: none;
+  color: #dc2626;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Detail Modal Specifics */
+.vitals-display-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.vital-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 0.75rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.vital-box .vital-label {
+  font-size: 0.725rem;
+  color: #64748b;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.vital-box strong {
+  font-size: 1.05rem;
+  color: #0f172a;
+}
+
+.detail-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.detail-section h5 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0f766e;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.35rem;
+}
+
+.clinical-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.clinical-grid label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.clinical-grid p {
+  margin: 0.2rem 0 0 0;
+  font-size: 0.9rem;
+  color: #1e293b;
+}
+
+.diagnosis-highlight {
+  color: #0f766e !important;
+  font-weight: 600;
+}
+
+.meds-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.meds-table th {
+  background: #f8fafc;
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.meds-table td {
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+@media (max-width: 768px) {
+  .vitals-inputs-grid,
+  .vitals-display-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .medication-row {
+    grid-template-columns: 1fr;
+  }
+}
