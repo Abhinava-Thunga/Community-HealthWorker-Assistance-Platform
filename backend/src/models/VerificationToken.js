@@ -25,6 +25,12 @@ const verificationTokenSchema = new mongoose.Schema(
   }
 );
 
+// Automatically delete expired verification tokens
+verificationTokenSchema.index(
+  { expiresAt: 1 },
+  { expireAfterSeconds: 0 }
+);
+
 const VerificationToken = mongoose.model(
   "VerificationToken",
   verificationTokenSchema

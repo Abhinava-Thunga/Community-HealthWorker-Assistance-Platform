@@ -1,3 +1,5 @@
+import User from "../models/user.js";
+
 import {
   sendOTP,
   verifyOTP,
@@ -29,6 +31,15 @@ export const sendOTPController = async (req, res) => {
 
     // Normalize email
     email = email.trim().toLowerCase();
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "An account with this email already exists. Please log in.",
+      });
+    }
 
     // Send REGISTER OTP
     await sendOTP(email, "REGISTER");
@@ -241,7 +252,9 @@ export const loginController = async (
       error
     );
 
-    return res.status(400).json({
+    const statusCode = error.statusCode || 400;
+
+    return res.status(statusCode).json({
       success: false,
       message:
         error.message ||

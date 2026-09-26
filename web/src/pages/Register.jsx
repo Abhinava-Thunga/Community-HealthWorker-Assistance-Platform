@@ -128,13 +128,11 @@ const Register = () => {
       setSuccess("");
 
       console.log("Verification token received:", token);
-
       setVerificationToken(token);
 
       // ========================================================
       // STEP 3: REGISTER USER IN DATABASE
       // ========================================================
-
       const response = await api.post("/auth/register", {
         fullName: formData.fullName.trim(),
         email: formData.email.trim().toLowerCase(),
@@ -147,25 +145,17 @@ const Register = () => {
 
       if (response.data?.success) {
         setSuccess(
-          "Account created successfully! Redirecting to login..."
+          "Account created successfully! Pending administrator approval."
         );
-
-        // Clear local storage registration data if any
-        localStorage.removeItem("registeredUser");
-
-        // Redirect to login
-        setTimeout(() => {
-          navigate("/login", { replace: true });
-        }, 1500);
+        return response.data;
       }
-
     } catch (error) {
       console.error("Registration error:", error);
-
-      setError(
+      const message =
         error.response?.data?.message ||
-          "Unable to create account. Please try again."
-      );
+        "Unable to create account. Please try again.";
+      setError(message);
+      throw new Error(message);
     } finally {
       setLoading(false);
     }

@@ -31,13 +31,15 @@ export const registerUser = async ({
     password,
     role: "WORKER",
     isEmailVerified: true,
-    isApproved: true,
+    isApproved: false,
+    status: "INACTIVE",
   });
 
   await deleteVerificationToken(email);
 
   return user;
 };
+
 export const loginUser = async ({
   email,
   password,
@@ -46,14 +48,36 @@ export const loginUser = async ({
   const user = await User.findOne({ email });
 
   if (!user) {
-    throw new Error("Invalid email or password");
+    const error = new Error("Invalid email or password");
+    error.statusCode = 401;
+    throw error;
   }
 
   const isMatch =
     await user.comparePassword(password);
 
   if (!isMatch) {
-    throw new Error("Invalid email or password");
+    const error = new Error("Invalid email or password");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  // Check if account is approved by admin
+  if (!user.isApproved) {
+    const error = new Error(
+      "Your account is pending administrator approval. Please wait for an administrator to approve your account."
+    );
+    error.statusCode = 403;
+    throw error;
+  }
+
+  // Check if account status is active
+  if (user.status !== "ACTIVE") {
+    const error = new Error(
+      "Your account is inactive. Please contact the administrator."
+    );
+    error.statusCode = 403;
+    throw error;
   }
 
   const token = generateJWT(user);
@@ -62,5 +86,4 @@ export const loginUser = async ({
     user,
     token,
   };
-
 };

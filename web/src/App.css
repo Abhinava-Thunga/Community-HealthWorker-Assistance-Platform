@@ -1498,6 +1498,37 @@ a {
   text-align: left;
 }
 
+.auth-page .auth-card .success-message {
+  padding: 12px 14px;
+  margin: 12px 0 0;
+  border-radius: 12px;
+  background: #e8f7f2;
+  border: 1px solid #b7e7da;
+  color: #087462;
+  font-size: 13px;
+  text-align: left;
+}
+
+.auth-message {
+  padding: 12px 14px;
+  margin: 14px 0 0;
+  border-radius: 12px;
+  font-size: 13px;
+  text-align: left;
+}
+
+.auth-message.error-message {
+  background: #fff1f1;
+  border: 1px solid #ffd4d4;
+  color: #c63d3d;
+}
+
+.auth-message.success-message {
+  background: #e8f7f2;
+  border: 1px solid #b7e7da;
+  color: #087462;
+}
+
 /* =========================================================
    AUTH RESPONSIVE
    ========================================================= */

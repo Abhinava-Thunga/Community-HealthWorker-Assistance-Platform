@@ -79,18 +79,18 @@ const Login = ({ onLogin }) => {
         console.error("Backend status:", err.response.status);
         console.error("Backend response:", err.response.data);
 
-        if (err.response.status === 401) {
-          message = "Invalid email or password.";
-        } else if (err.response.status === 403) {
-          message =
-            "Your account is not authorized or has not been verified.";
-        } else if (err.response.status === 404) {
-          message =
-            "Login API was not found. Check the backend authentication route.";
-        } else if (err.response.data?.message) {
+        if (err.response.data?.message) {
           message = err.response.data.message;
         } else if (err.response.data?.error) {
           message = err.response.data.error;
+        } else if (err.response.status === 401) {
+          message = "Invalid email or password.";
+        } else if (err.response.status === 403) {
+          message =
+            "Your account is pending administrator approval or is inactive.";
+        } else if (err.response.status === 404) {
+          message =
+            "Login API was not found. Check the backend authentication route.";
         }
       } else if (err.request) {
         message =

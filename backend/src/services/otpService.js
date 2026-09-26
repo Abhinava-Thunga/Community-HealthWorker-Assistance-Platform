@@ -74,6 +74,8 @@ export const sendOTP = async (
     expiresAt,
   });
 
+  console.log(`[OTP Service] Generated ${purpose} OTP for ${normalizedEmail}: ${otp}`);
+
   // ----------------------------------------------------------
   // Send OTP email
   // ----------------------------------------------------------
@@ -174,9 +176,7 @@ export const verifyOTP = async (
 
   // No OTP found
   if (!otpDocument) {
-    throw new Error(
-      "No OTP found. Please request a new OTP."
-    );
+    throw new Error("Invalid OTP");
   }
 
   // ----------------------------------------------------------
@@ -187,14 +187,12 @@ export const verifyOTP = async (
     !otpDocument.expiresAt ||
     otpDocument.expiresAt.getTime() < Date.now()
   ) {
-
-    await OTP.deleteOne({
-      _id: otpDocument._id,
+    await OTP.deleteMany({
+      email: normalizedEmail,
+      purpose,
     });
 
-    throw new Error(
-      "OTP has expired. Please request a new OTP."
-    );
+    throw new Error("Invalid or expired OTP. Please request a new OTP.");
   }
 
   // ----------------------------------------------------------
@@ -211,11 +209,12 @@ export const verifyOTP = async (
 
   // ----------------------------------------------------------
   // OTP is correct
-  // Delete it so it cannot be reused
+  // Delete it immediately from MongoDB so it cannot be reused
   // ----------------------------------------------------------
 
-  await OTP.deleteOne({
-    _id: otpDocument._id,
+  await OTP.deleteMany({
+    email: normalizedEmail,
+    purpose,
   });
 
   return true;
