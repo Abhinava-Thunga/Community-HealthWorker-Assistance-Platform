@@ -4,6 +4,8 @@
   "private": true,
   "description": "Community Health Worker Assistance Platform with Generative AI Clinical Decision Support",
   "scripts": {
+    "build": "npm --prefix web install && npm --prefix web run build && npm --prefix backend install",
+    "start": "node backend/src/server.js",
     "backend": "npm run dev --prefix backend",
     "web": "npm run dev --prefix web",
     "dev:backend": "npm run dev --prefix backend",

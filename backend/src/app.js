@@ -61,16 +61,6 @@ const authLimiter = rateLimit({
 // SYSTEM STATUS / HEALTH CHECK
 // ==========================================
 
-app.get("/", (req, res) => {
-  res.status(200).json({
-    success: true,
-    platform: "Community Health Worker Assistance Platform API",
-    status: "Operational",
-    version: "1.0.0",
-    docs: "/api/health",
-  });
-});
-
 app.get("/api/health", (req, res) => {
   const dbState = mongoose.connection.readyState;
   const states = {
@@ -118,6 +108,18 @@ if (fs.existsSync(distPath)) {
       return res.sendFile(path.resolve(distPath, "index.html"));
     }
     next();
+  });
+} else {
+  // If web/dist is not present, show backend status
+  app.get("/", (req, res) => {
+    res.status(200).json({
+      success: true,
+      platform: "Community Health Worker Assistance Platform API",
+      status: "Operational",
+      version: "1.0.0",
+      docs: "/api/health",
+      message: "Backend API is live! Deploy frontend on Vercel or build web/dist for unified hosting.",
+    });
   });
 }
 
