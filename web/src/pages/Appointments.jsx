@@ -214,12 +214,20 @@ const Appointments = ({ onLogout }) => {
             <Link to="/health-records" className="nav-item">
               Health Records
             </Link>
+            <Link to="/ai-assistant" className="nav-item">
+              AI Assistant
+            </Link>
+            {userRole === "ADMIN" && (
+              <Link to="/admin" className="nav-item admin-nav-pill">
+                🛡️ Admin Panel
+              </Link>
+            )}
           </nav>
 
           <div className="user-area">
             <div className="user-info">
               <strong>{userName}</strong>
-              <span>{userRole}</span>
+              <span>{user.workerId ? `🪪 ${user.workerId} • ` : ""}{userRole}</span>
             </div>
             <div className="user-avatar">{firstLetter}</div>
             <button

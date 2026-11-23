@@ -12,7 +12,7 @@ import { authorize } from "../middleware/roleMiddleware.js";
 const router = express.Router();
 
 router.use(protect);
-router.use(authorize("WORKER", "ADMIN", "SUPER_ADMIN"));
+router.use(authorize("WORKER", "ADMIN"));
 
 router.post("/", createHealthRecord);
 router.get("/", getHealthRecords);

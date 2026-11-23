@@ -6,6 +6,7 @@ import {
   getPatientById,
   updatePatient,
   searchPatients,
+  deletePatient,
 } from "../controllers/patientController.js";
 
 import { protect } from "../middleware/authMiddleware.js";
@@ -20,7 +21,7 @@ const router = express.Router();
 router.post(
   "/",
   protect,
-  authorize("WORKER", "ADMIN", "SUPER_ADMIN"),
+  authorize("WORKER", "ADMIN"),
   createPatient
 );
 
@@ -32,7 +33,7 @@ router.post(
 router.get(
   "/search",
   protect,
-  authorize("WORKER", "ADMIN", "SUPER_ADMIN"),
+  authorize("WORKER", "ADMIN"),
   searchPatients
 );
 
@@ -43,7 +44,7 @@ router.get(
 router.get(
   "/",
   protect,
-  authorize("WORKER", "ADMIN", "SUPER_ADMIN"),
+  authorize("WORKER", "ADMIN"),
   getPatients
 );
 
@@ -54,7 +55,7 @@ router.get(
 router.get(
   "/:id",
   protect,
-  authorize("WORKER", "ADMIN", "SUPER_ADMIN"),
+  authorize("WORKER", "ADMIN"),
   getPatientById
 );
 
@@ -65,8 +66,19 @@ router.get(
 router.put(
   "/:id",
   protect,
-  authorize("WORKER", "ADMIN", "SUPER_ADMIN"),
+  authorize("WORKER", "ADMIN"),
   updatePatient
+);
+
+// ==========================================
+// DELETE PATIENT
+// ==========================================
+
+router.delete(
+  "/:id",
+  protect,
+  authorize("WORKER", "ADMIN"),
+  deletePatient
 );
 
 export default router;

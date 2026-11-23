@@ -8,6 +8,8 @@ const Register = () => {
 
   const [formData, setFormData] = useState({
     fullName: "",
+    role: "WORKER",
+    workerId: "",
     email: "",
     phone: "",
     password: "",
@@ -46,6 +48,7 @@ const Register = () => {
 
     const {
       fullName,
+      workerId,
       email,
       phone,
       password,
@@ -55,12 +58,13 @@ const Register = () => {
     // Basic validation
     if (
       !fullName.trim() ||
+      !workerId.trim() ||
       !email.trim() ||
       !phone.trim() ||
       !password ||
       !confirmPassword
     ) {
-      setError("Please fill in all fields.");
+      setError("Please fill in all fields including your ASHA / Worker ID.");
       return;
     }
 
@@ -135,6 +139,8 @@ const Register = () => {
       // ========================================================
       const response = await api.post("/auth/register", {
         fullName: formData.fullName.trim(),
+        role: formData.role || "WORKER",
+        workerId: formData.workerId.trim().toUpperCase(),
         email: formData.email.trim().toLowerCase(),
         phone: formData.phone.trim(),
         password: formData.password,
@@ -275,6 +281,79 @@ const Register = () => {
                   value={formData.fullName}
                   onChange={handleChange}
                   autoComplete="name"
+                />
+
+              </div>
+
+            </div>
+
+            {/* ROLE SELECTION */}
+
+            <div className="form-group">
+
+              <label htmlFor="role">
+                Registering As (Role) <span style={{ color: "#ef4444" }}>*</span>
+              </label>
+
+              <div className="input-wrapper">
+
+                <span className="input-icon">
+                  🛡️
+                </span>
+
+                <select
+                  id="role"
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  style={{
+                    width: "100%",
+                    background: "transparent",
+                    border: "none",
+                    outline: "none",
+                    fontSize: "0.95rem",
+                    color: "#1e293b",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    padding: "0.2rem 0",
+                  }}
+                >
+                  <option value="WORKER">Community Health Worker (ASHA / ANM / Volunteer)</option>
+                  <option value="ADMIN">Health Administrator / Officer (PHC / District)</option>
+                </select>
+
+              </div>
+
+            </div>
+
+            {/* ASHA / WORKER ID */}
+
+            <div className="form-group">
+
+              <label htmlFor="workerId">
+                {formData.role === "ADMIN" ? "Administrator Employee ID" : "ASHA Worker ID / Field ID"}{" "}
+                <span style={{ color: "#ef4444" }}>*</span>
+              </label>
+
+              <div className="input-wrapper">
+
+                <span className="input-icon">
+                  🪪
+                </span>
+
+                <input
+                  id="workerId"
+                  type="text"
+                  name="workerId"
+                  placeholder={
+                    formData.role === "ADMIN"
+                      ? "e.g. ADMIN-001 or EMP-2026"
+                      : "e.g. ASHA-1042 or ANM-305"
+                  }
+                  value={formData.workerId}
+                  onChange={handleChange}
+                  autoComplete="off"
+                  required
                 />
 
               </div>

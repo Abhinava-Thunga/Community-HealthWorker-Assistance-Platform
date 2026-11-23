@@ -13,6 +13,9 @@ import Dashboard from "./pages/Dashboard";
 import PatientManagement from "./pages/PatientManagement";
 import Appointments from "./pages/Appointments";
 import HealthRecords from "./pages/HealthRecords";
+import AiAssistant from "./pages/AiAssistant";
+import AdminPanel from "./pages/AdminPanel";
+import FloatingAiWidget from "./components/common/FloatingAiWidget";
 
 import "./App.css";
 
@@ -110,6 +113,7 @@ function AppContent() {
   };
 
   return (
+    <>
     <Routes>
 
       {/* ===============================================
@@ -225,6 +229,32 @@ function AppContent() {
       />
 
       {/* ===============================================
+          AI HEALTH ASSISTANT
+      =============================================== */}
+
+      <Route
+        path="/ai-assistant"
+        element={
+          <ProtectedRoute>
+            <AiAssistant onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ===============================================
+          ADMIN PANEL
+      =============================================== */}
+
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            <AdminPanel onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ===============================================
           UNKNOWN ROUTE
       =============================================== */}
 
@@ -243,6 +273,10 @@ function AppContent() {
       />
 
     </Routes>
+
+    {/* Omnipresent Floating AI Clinical Co-Pilot Widget */}
+    {isLoggedIn && <FloatingAiWidget />}
+    </>
   );
 }
 

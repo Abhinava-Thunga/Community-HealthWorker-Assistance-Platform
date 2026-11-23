@@ -13,7 +13,7 @@ const router = express.Router();
 
 // All appointment routes require authentication
 router.use(protect);
-router.use(authorize("WORKER", "ADMIN", "SUPER_ADMIN"));
+router.use(authorize("WORKER", "ADMIN"));
 
 router.post("/", createAppointment);
 router.get("/", getAppointments);

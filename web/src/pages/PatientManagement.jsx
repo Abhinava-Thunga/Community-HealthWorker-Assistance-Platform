@@ -337,6 +337,33 @@ const PatientManagement = ({ onLogout }) => {
     }
   };
 
+  const handleDeletePatient = async (id, name) => {
+    if (
+      !window.confirm(
+        `Are you sure you want to permanently delete patient "${name}"? This will also remove all associated appointments and health records.`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      setSaving(true);
+      await api.delete(`/patients/${id}`);
+      showToast(`Patient "${name}" deleted successfully.`, "success");
+      setSelectedPatient(null);
+      await loadPatients();
+      window.dispatchEvent(new Event("patientsUpdated"));
+    } catch (error) {
+      console.error("Delete patient error:", error);
+      showToast(
+        error.response?.data?.message || "Failed to delete patient.",
+        "error"
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
   // ==========================================
   // LOGOUT
   // ==========================================
@@ -458,6 +485,14 @@ const PatientManagement = ({ onLogout }) => {
             <Link to="/health-records" className="nav-item">
               Health Records
             </Link>
+            <Link to="/ai-assistant" className="nav-item">
+              AI Assistant
+            </Link>
+            {userRole === "ADMIN" && (
+              <Link to="/admin" className="nav-item admin-nav-pill">
+                🛡️ Admin Panel
+              </Link>
+            )}
           </nav>
 
           <div className="patient-user">
@@ -467,7 +502,7 @@ const PatientManagement = ({ onLogout }) => {
             </span>
 
             <span className="worker-badge">
-              {userRole}
+              {user.workerId ? `🪪 ${user.workerId} • ` : ""}{userRole}
             </span>
 
             <button
@@ -1177,6 +1212,31 @@ const PatientManagement = ({ onLogout }) => {
                     }
                   >
                     📋 Add Health Record
+                  </button>
+
+                  <button
+                    className="save-button"
+                    style={{ background: "#7c3aed" }}
+                    onClick={() =>
+                      navigate("/ai-assistant", {
+                        state: { patientId: selectedPatient._id },
+                      })
+                    }
+                  >
+                    🤖 Consult AI
+                  </button>
+
+                  <button
+                    className="save-button"
+                    style={{ background: "#dc2626" }}
+                    onClick={() =>
+                      handleDeletePatient(
+                        selectedPatient._id,
+                        selectedPatient.fullName
+                      )
+                    }
+                  >
+                    🗑️ Delete Patient
                   </button>
                 </div>
               </>

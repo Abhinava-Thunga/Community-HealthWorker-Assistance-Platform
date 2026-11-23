@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import Patient from "../models/Patient.js";
+import Appointment from "../models/Appointment.js";
+import HealthRecord from "../models/HealthRecord.js";
 
 // ==========================================
 // CREATE PATIENT
@@ -264,6 +266,48 @@ export const searchPatients = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to search patients",
+    });
+  }
+};
+
+// ==========================================
+// DELETE PATIENT (Cascading)
+// ==========================================
+export const deletePatient = async (req, res) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid patient ID",
+      });
+    }
+
+    const patient = await Patient.findById(req.params.id);
+
+    if (!patient) {
+      return res.status(404).json({
+        success: false,
+        message: "Patient not found",
+      });
+    }
+
+    // Cascade delete associated appointments and health records
+    await Promise.all([
+      Appointment.deleteMany({ patient: req.params.id }),
+      HealthRecord.deleteMany({ patient: req.params.id }),
+      Patient.findByIdAndDelete(req.params.id),
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      message: `Patient ${patient.fullName} and all related records deleted successfully`,
+    });
+  } catch (error) {
+    console.error("Delete Patient Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to delete patient",
+      error: error.message,
     });
   }
 };

@@ -142,7 +142,13 @@ export const registerController = async (
       phone,
       password,
       verificationToken,
+      workerId,
+      ashaId,
+      role,
     } = req.body;
+
+    const finalWorkerId = String(workerId || ashaId || "").trim().toUpperCase();
+    const validatedRole = role && String(role).toUpperCase() === "ADMIN" ? "ADMIN" : "WORKER";
 
     // Validate required fields
     if (
@@ -150,12 +156,13 @@ export const registerController = async (
       !email ||
       !phone ||
       !password ||
-      !verificationToken
+      !verificationToken ||
+      !finalWorkerId
     ) {
       return res.status(400).json({
         success: false,
         message:
-          "All fields are required",
+          "All fields are required, including your ASHA / Worker ID",
       });
     }
 
@@ -171,17 +178,22 @@ export const registerController = async (
       phone,
       password,
       verificationToken,
+      workerId: finalWorkerId,
+      role: validatedRole,
     });
 
     return res.status(201).json({
       success: true,
-      message: "Registration successful",
+      message: "Registration successful. Your account is pending administrator approval.",
 
       user: {
         id: user._id,
         fullName: user.fullName,
         email: user.email,
+        phone: user.phone,
+        workerId: user.workerId,
         role: user.role,
+        isApproved: user.isApproved,
       },
     });
 
@@ -242,6 +254,8 @@ export const loginController = async (
         id: result.user._id,
         fullName: result.user.fullName,
         email: result.user.email,
+        phone: result.user.phone,
+        workerId: result.user.workerId,
         role: result.user.role,
       },
     });

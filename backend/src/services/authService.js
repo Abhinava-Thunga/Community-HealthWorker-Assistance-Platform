@@ -11,25 +11,46 @@ export const registerUser = async ({
   phone,
   password,
   verificationToken,
+  workerId,
+  role = "WORKER",
 }) => {
-
   await validateVerificationToken(
     email,
     verificationToken
   );
 
-  const existingUser = await User.findOne({ email });
-
-  if (existingUser) {
-    throw new Error("Email already registered");
+  // Validate Worker ID presence
+  if (!workerId || !String(workerId).trim()) {
+    throw new Error("ASHA / Worker ID is required");
   }
 
+  const normalizedWorkerId = String(workerId).trim().toUpperCase();
+
+  // Check duplicate email
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    throw new Error("An account with this email is already registered");
+  }
+
+  // Check duplicate workerId
+  const existingWorker = await User.findOne({ workerId: normalizedWorkerId });
+  if (existingWorker) {
+    throw new Error(`Worker ID / ASHA ID "${normalizedWorkerId}" is already registered. Please check your ID.`);
+  }
+
+  // Assign user-selected role (defaults to WORKER if not specified)
+  const assignedRole = String(role).toUpperCase() === "ADMIN" ? "ADMIN" : "WORKER";
+
+  // Account is created with the requested role, pending approval (isApproved: false, status: "INACTIVE")
+  // For Admin: approve by setting isApproved: true, status: "ACTIVE" in MongoDB Atlas
+  // For Worker: approved either via Admin Panel by an active Admin or via MongoDB Atlas
   const user = await User.create({
     fullName,
     email,
     phone,
     password,
-    role: "WORKER",
+    workerId: normalizedWorkerId,
+    role: assignedRole,
     isEmailVerified: true,
     isApproved: false,
     status: "INACTIVE",
@@ -44,7 +65,6 @@ export const loginUser = async ({
   email,
   password,
 }) => {
-
   const user = await User.findOne({ email });
 
   if (!user) {
@@ -53,8 +73,7 @@ export const loginUser = async ({
     throw error;
   }
 
-  const isMatch =
-    await user.comparePassword(password);
+  const isMatch = await user.comparePassword(password);
 
   if (!isMatch) {
     const error = new Error("Invalid email or password");
@@ -62,7 +81,7 @@ export const loginUser = async ({
     throw error;
   }
 
-  // Check if account is approved by admin
+  // Check if account is approved by admin (or updated in MongoDB Atlas for Admin)
   if (!user.isApproved) {
     const error = new Error(
       "Your account is pending administrator approval. Please wait for an administrator to approve your account."

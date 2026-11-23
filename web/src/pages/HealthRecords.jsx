@@ -269,12 +269,20 @@ const HealthRecords = ({ onLogout }) => {
             <Link to="/health-records" className="nav-item active">
               Health Records
             </Link>
+            <Link to="/ai-assistant" className="nav-item">
+              AI Assistant
+            </Link>
+            {userRole === "ADMIN" && (
+              <Link to="/admin" className="nav-item admin-nav-pill">
+                🛡️ Admin Panel
+              </Link>
+            )}
           </nav>
 
           <div className="user-area">
             <div className="user-info">
               <strong>{userName}</strong>
-              <span>{userRole}</span>
+              <span>{user.workerId ? `🪪 ${user.workerId} • ` : ""}{userRole}</span>
             </div>
             <div className="user-avatar">{firstLetter}</div>
             <button
@@ -948,6 +956,22 @@ const HealthRecords = ({ onLogout }) => {
                   onClick={() => handleDeleteRecord(selectedRecord._id)}
                 >
                   Delete Record
+                </button>
+                <button
+                  className="reopen-btn"
+                  style={{
+                    background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                    color: "#ffffff",
+                    border: "none",
+                    fontWeight: "700",
+                  }}
+                  onClick={() => {
+                    navigate("/ai-assistant", {
+                      state: { patientId: selectedRecord.patient?._id },
+                    });
+                  }}
+                >
+                  🤖 Consult AI on Record
                 </button>
                 <button
                   className="reopen-btn"

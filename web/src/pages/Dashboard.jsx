@@ -110,6 +110,7 @@ const Dashboard = ({ onLogout }) => {
       link: "/patients",
       available: true,
       className: "service-patients",
+      actionText: "Manage patients",
     },
     {
       icon: "🗓️",
@@ -120,6 +121,7 @@ const Dashboard = ({ onLogout }) => {
       link: "/appointments",
       available: true,
       className: "service-appointments",
+      actionText: "View appointments",
     },
     {
       icon: "📋",
@@ -130,17 +132,34 @@ const Dashboard = ({ onLogout }) => {
       link: "/health-records",
       available: true,
       className: "service-records",
+      actionText: "Access health records",
     },
     {
       icon: "🤖",
       title: "AI Health Assistant",
       description:
-        "Intelligent healthcare information and decision-support assistance.",
-      status: "Coming Soon",
-      link: "#",
-      available: false,
+        "Clinical triage, vital signs interpretation, danger sign detection & catch-up protocols.",
+      status: "Available",
+      link: "/ai-assistant",
+      available: true,
       className: "service-ai",
+      actionText: "Open AI Assistant",
     },
+    ...(userRole === "ADMIN"
+      ? [
+          {
+            icon: "🛡️",
+            title: "Admin Panel & Governance",
+            description:
+              "Review pending worker approvals, manage user roles, audit activity and platform metrics.",
+            status: "Admin Only",
+            link: "/admin",
+            available: true,
+            className: "service-admin",
+            actionText: "Open Admin Panel",
+          },
+        ]
+      : []),
   ];
 
   const logout = () => {
@@ -184,6 +203,29 @@ const Dashboard = ({ onLogout }) => {
 
           </Link>
 
+          <nav className="header-nav">
+            <Link to="/dashboard" className="nav-item active">
+              Dashboard
+            </Link>
+            <Link to="/patients" className="nav-item">
+              Patients
+            </Link>
+            <Link to="/appointments" className="nav-item">
+              Appointments
+            </Link>
+            <Link to="/health-records" className="nav-item">
+              Health Records
+            </Link>
+            <Link to="/ai-assistant" className="nav-item">
+              AI Assistant
+            </Link>
+            {userRole === "ADMIN" && (
+              <Link to="/admin" className="nav-item admin-nav-pill">
+                🛡️ Admin Panel
+              </Link>
+            )}
+          </nav>
+
           <div className="user-area">
 
             <div className="user-info">
@@ -192,7 +234,7 @@ const Dashboard = ({ onLogout }) => {
               </strong>
 
               <span>
-                {userRole}
+                {user.workerId ? `🪪 ${user.workerId} • ` : ""}{userRole}
               </span>
             </div>
 
@@ -380,6 +422,38 @@ const Dashboard = ({ onLogout }) => {
 
           </div>
 
+          <div
+            className="stat-card stat-ai"
+            onClick={() => navigate("/ai-assistant")}
+            style={{ cursor: "pointer" }}
+          >
+
+            <div className="stat-icon">
+              🤖
+            </div>
+
+            <div className="stat-content">
+
+              <span className="stat-label">
+                AI Health Co-Pilot
+              </span>
+
+              <strong className="stat-number" style={{ color: "#0d9488" }}>
+                Active
+              </strong>
+
+              <span className="stat-description">
+                Triage & clinical guidance
+              </span>
+
+            </div>
+
+            <span className="stat-arrow">
+              →
+            </span>
+
+          </div>
+
         </section>
 
         {/* SERVICES */}
@@ -446,17 +520,15 @@ const Dashboard = ({ onLogout }) => {
                     </p>
 
                     <div className="service-footer">
-
                       <span>
-                        {service.available
-                          ? "Open patient records"
-                          : "Coming soon"}
+                        {service.actionText ||
+                          (service.available
+                            ? "Open tool"
+                            : "Coming soon")}
                       </span>
-
                       <span className="arrow">
                         →
                       </span>
-
                     </div>
                   </>
                 );

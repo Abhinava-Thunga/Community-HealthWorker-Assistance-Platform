@@ -28,15 +28,22 @@ const userSchema = new mongoose.Schema(
       required: [true, "Phone number is required"],
     },
 
+    workerId: {
+      type: String,
+      required: [true, "ASHA Worker ID is required"],
+      unique: true,
+      trim: true,
+      uppercase: true,
+    },
+
     employeeId: {
       type: String,
-      unique: true,
-      sparse: true,
+      default: "",
     },
 
     role: {
       type: String,
-      enum: ["SUPER_ADMIN", "ADMIN", "WORKER"],
+      enum: ["ADMIN", "WORKER"],
       default: "WORKER",
     },
 

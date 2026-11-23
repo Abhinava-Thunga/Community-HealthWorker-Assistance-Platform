@@ -5,6 +5,7 @@ const generateJWT = (user) => {
     {
       id: user._id,
       email: user.email,
+      workerId: user.workerId,
       role: user.role,
     },
     process.env.JWT_SECRET,
