@@ -83,6 +83,18 @@ app.get("/api/health", (req, res) => {
 // API ROUTES
 // ==========================================
 
+// Pre-flight database connection check for API requests
+app.use("/api", (req, res, next) => {
+  if (req.path === "/health") return next();
+  if (mongoose.connection.readyState === 0) {
+    return res.status(503).json({
+      success: false,
+      message: "Database connection unavailable. Please check that MONGODB_URI is set in Render Environment Variables and that 0.0.0.0/0 is whitelisted in MongoDB Atlas Network Access.",
+    });
+  }
+  next();
+});
+
 app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes);
