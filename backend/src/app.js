@@ -112,11 +112,12 @@ const distPath = path.resolve(__dirname, "../../web/dist");
 if (fs.existsSync(distPath)) {
   app.use(express.static(distPath));
 
-  app.get("*", (req, res, next) => {
-    if (req.path.startsWith("/api")) {
-      return next();
+  // SPA Fallback for client-side routing in Express 5
+  app.use((req, res, next) => {
+    if (req.method === "GET" && !req.path.startsWith("/api")) {
+      return res.sendFile(path.resolve(distPath, "index.html"));
     }
-    res.sendFile(path.resolve(distPath, "index.html"));
+    next();
   });
 }
 
