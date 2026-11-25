@@ -41,7 +41,28 @@ const sendEmail = async (to, subject, html) => {
   if (process.env.BREVO_API_KEY) {
     try {
       console.log("[EmailService] Dispatching via Brevo HTTPS API (Port 443)...");
-      const brevoSenderEmail = process.env.BREVO_SENDER_EMAIL || fromEmail;
+      let brevoSenderEmail = process.env.BREVO_SENDER_EMAIL;
+
+      // Automatically discover verified active sender from Brevo account
+      if (!brevoSenderEmail) {
+        try {
+          const sendersRes = await fetch("https://api.brevo.com/v3/senders", {
+            headers: { "api-key": process.env.BREVO_API_KEY },
+          });
+          const sendersData = await sendersRes.json();
+          // Prefer chwaplatform@gmail.com if active, otherwise use any active verified sender
+          const preferredActive = sendersData.senders?.find(
+            (s) => s.active && s.email.toLowerCase() === fromEmail.toLowerCase()
+          );
+          const anyActive = sendersData.senders?.find((s) => s.active);
+          brevoSenderEmail = preferredActive?.email || anyActive?.email || fromEmail;
+          console.log(`[EmailService] Using verified Brevo sender: ${brevoSenderEmail}`);
+        } catch (sErr) {
+          console.warn("[EmailService] Could not query Brevo senders:", sErr.message);
+          brevoSenderEmail = fromEmail;
+        }
+      }
+
       const response = await fetch("https://api.brevo.com/v3/smtp/email", {
         method: "POST",
         headers: {
