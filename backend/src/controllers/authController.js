@@ -54,7 +54,11 @@ export const sendOTPController = async (req, res) => {
     console.error("Send OTP Error:", error);
 
     let clientMessage = error.message || "Unable to send OTP";
-    if (error.message && (error.message.toLowerCase().includes("timeout") || error.code === "ETIMEDOUT")) {
+    if (
+      !error.message?.includes("Brevo") &&
+      !error.message?.includes("Resend") &&
+      (error.message?.toLowerCase().includes("timeout") || error.code === "ETIMEDOUT")
+    ) {
       clientMessage = "Email delivery timed out. Render's free tier blocks outbound SMTP ports 465/587. Please add BREVO_API_KEY in Render Environment Variables for HTTPS delivery.";
     }
 
