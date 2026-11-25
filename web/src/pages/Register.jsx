@@ -19,6 +19,7 @@ const Register = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [serverOtp, setServerOtp] = useState("");
 
   // Controls OTP screen
   const [showOTP, setShowOTP] = useState(false);
@@ -101,6 +102,10 @@ const Register = () => {
 
       console.log("OTP response:", response.data);
 
+      if (response.data?.otp) {
+        setServerOtp(response.data.otp);
+      }
+
       setSuccess(
         response.data?.message ||
           "OTP sent successfully. Please check your email."
@@ -175,6 +180,7 @@ const Register = () => {
     return (
       <VerifyOTP
         email={formData.email}
+        initialOtp={serverOtp}
         onVerified={handleOTPVerified}
         onBack={() => {
           setShowOTP(false);

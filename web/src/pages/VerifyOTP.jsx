@@ -2,12 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 
-function VerifyOTP({ email, onVerified, onBack }) {
+function VerifyOTP({ email, initialOtp = "", onVerified, onBack }) {
   const navigate = useNavigate();
 
-  const [otp, setOtp] = useState("");
+  const [otp, setOtp] = useState(initialOtp || "");
   const [errorMessage, setErrorMessage] = useState("");
-  const [infoMessage, setInfoMessage] = useState("");
+  const [infoMessage, setInfoMessage] = useState(
+    initialOtp ? `Verification code ready: ${initialOtp}` : ""
+  );
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("");
   const [resending, setResending] = useState(false);

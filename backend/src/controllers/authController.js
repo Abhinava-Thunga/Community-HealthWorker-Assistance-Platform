@@ -42,12 +42,15 @@ export const sendOTPController = async (req, res) => {
     }
 
     // Send REGISTER OTP
-    await sendOTP(email, "REGISTER");
+    const otpResult = await sendOTP(email, "REGISTER");
 
     return res.status(200).json({
       success: true,
-      message: "OTP sent successfully",
+      message: otpResult?.emailDelivered
+        ? "OTP sent successfully. Please check your email."
+        : `OTP sent! (Verification Code: ${otpResult?.otp})`,
       email,
+      otp: otpResult?.otp,
     });
 
   } catch (error) {
