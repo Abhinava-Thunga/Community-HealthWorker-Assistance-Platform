@@ -56,11 +56,11 @@ export const sendOTP = async (
   }
 
   // ----------------------------------------------------------
-  // OTP expires after 5 minutes
+  // OTP expires after 10 minutes (generous window for cloud relay delivery)
   // ----------------------------------------------------------
 
   const expiresAt = new Date(
-    Date.now() + 5 * 60 * 1000
+    Date.now() + 10 * 60 * 1000
   );
 
   // ----------------------------------------------------------
