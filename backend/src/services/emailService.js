@@ -6,7 +6,38 @@ const sendEmail = async (to, subject, html) => {
 
   const apiErrors = [];
 
-  // 1. Try Brevo HTTPS REST API (Runs over Port 443 / HTTPS - Bypasses Render free tier SMTP port block)
+  // 1. Priority 1: Resend HTTPS REST API (Fastest: Delivers in 1-2s over Port 443 with no IP restrictions)
+  if (process.env.RESEND_API_KEY) {
+    try {
+      console.log("[EmailService] Dispatching via Resend HTTPS API (Port 443)...");
+      const resendSender = process.env.RESEND_SENDER_EMAIL || "onboarding@resend.dev";
+      const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: `Community Health Worker Platform <${resendSender}>`,
+          to: [to],
+          subject,
+          html,
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || JSON.stringify(data));
+      }
+      console.log(`[EmailService] Email delivered successfully via Resend to ${to} (ID: ${data.id})`);
+      return { messageId: data.id };
+    } catch (resendErr) {
+      console.error("[EmailService] Resend API Error:", resendErr.message);
+      apiErrors.push(`Resend: ${resendErr.message}`);
+    }
+  }
+
+  // 2. Priority 2: Brevo HTTPS REST API (Runs over Port 443 / HTTPS)
   if (process.env.BREVO_API_KEY) {
     try {
       console.log("[EmailService] Dispatching via Brevo HTTPS API (Port 443)...");
@@ -39,37 +70,6 @@ const sendEmail = async (to, subject, html) => {
     } catch (brevoErr) {
       console.error("[EmailService] Brevo API Error:", brevoErr.message);
       apiErrors.push(`Brevo: ${brevoErr.message}`);
-    }
-  }
-
-  // 2. Try Resend HTTPS REST API (Runs over Port 443 / HTTPS)
-  if (process.env.RESEND_API_KEY) {
-    try {
-      console.log("[EmailService] Dispatching via Resend HTTPS API (Port 443)...");
-      const resendSender = process.env.RESEND_SENDER_EMAIL || (process.env.RESEND_API_KEY ? "onboarding@resend.dev" : fromEmail);
-      const response = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: `Community Health Worker Platform <${resendSender}>`,
-          to: [to],
-          subject,
-          html,
-        }),
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || JSON.stringify(data));
-      }
-      console.log(`[EmailService] Email delivered successfully via Resend to ${to} (ID: ${data.id})`);
-      return { messageId: data.id };
-    } catch (resendErr) {
-      console.error("[EmailService] Resend API Error:", resendErr.message);
-      apiErrors.push(`Resend: ${resendErr.message}`);
     }
   }
 
