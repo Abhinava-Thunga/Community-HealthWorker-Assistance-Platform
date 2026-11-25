@@ -77,85 +77,74 @@ export const sendOTP = async (
   console.log(`[OTP Service] Generated ${purpose} OTP for ${normalizedEmail}: ${otp}`);
 
   // ----------------------------------------------------------
-  // Send OTP email with resilient fallback
+  // Send OTP email
   // ----------------------------------------------------------
-  let emailDelivered = false;
-  try {
-    console.log(`[OTP Service] Dispatching email to ${normalizedEmail}...`);
-    await sendEmail(
-      normalizedEmail,
-      "Community Health Worker Assistance Platform - Email Verification",
-      `
+  console.log(`[OTP Service] Dispatching OTP email from ${process.env.EMAIL_USER || "chwaplatform@gmail.com"} to ${normalizedEmail}...`);
+  await sendEmail(
+    normalizedEmail,
+    "Community Health Worker Assistance Platform - Email Verification",
+    `
+      <div style="
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+      ">
+
+        <h2 style="color:#0d6efd;">
+          Community Health Worker Assistance Platform
+        </h2>
+
+        <p>Hello,</p>
+
+        <p>
+          Your One-Time Password (OTP) for email verification is:
+        </p>
+
         <div style="
-          font-family: Arial, sans-serif;
-          line-height: 1.6;
-          max-width: 600px;
-          margin: auto;
-          padding: 20px;
+          background:#f4f7fb;
+          padding:20px;
+          text-align:center;
+          border-radius:10px;
+          margin:20px 0;
         ">
 
-          <h2 style="color:#0d6efd;">
-            Community Health Worker Assistance Platform
-          </h2>
-
-          <p>Hello,</p>
-
-          <p>
-            Your One-Time Password (OTP) for email verification is:
-          </p>
-
-          <div style="
-            background:#f4f7fb;
-            padding:20px;
-            text-align:center;
-            border-radius:10px;
-            margin:20px 0;
+          <h1 style="
+            letter-spacing:8px;
+            color:#0d6efd;
+            margin:0;
           ">
-
-            <h1 style="
-              letter-spacing:8px;
-              color:#0d6efd;
-              margin:0;
-            ">
-              ${otp}
-            </h1>
-
-          </div>
-
-          <p>
-            This OTP is valid for
-            <strong>5 minutes</strong>.
-          </p>
-
-          <p>
-            Please do not share this OTP with anyone.
-          </p>
-
-          <br>
-
-          <p>
-            Regards,
-          </p>
-
-          <strong>
-            Community Health Worker Assistance Platform
-          </strong>
+            ${otp}
+          </h1>
 
         </div>
-      `
-    );
-    emailDelivered = true;
-    console.log(`[OTP Service] Email successfully delivered to ${normalizedEmail}`);
-  } catch (mailError) {
-    console.warn(`[OTP Service] Email delivery warning (${mailError.message}).`);
-    console.warn(`[OTP Service] Active fallback OTP stored in DB for ${normalizedEmail} is: ${otp}`);
-  }
 
-  return {
-    success: true,
-    otp,
-    emailDelivered,
-  };
+        <p>
+          This OTP is valid for
+          <strong>5 minutes</strong>.
+        </p>
+
+        <p>
+          Please do not share this OTP with anyone.
+        </p>
+
+        <br>
+
+        <p>
+          Regards,
+        </p>
+
+        <strong>
+          Community Health Worker Assistance Platform
+        </strong>
+
+      </div>
+    `
+  );
+  console.log(`[OTP Service] Email successfully delivered to ${normalizedEmail}`);
+
+  return true;
 };
 
 

@@ -41,16 +41,13 @@ export const sendOTPController = async (req, res) => {
       });
     }
 
-    // Send REGISTER OTP
-    const otpResult = await sendOTP(email, "REGISTER");
+    // Send REGISTER OTP via email from chwaplatform@gmail.com
+    await sendOTP(email, "REGISTER");
 
     return res.status(200).json({
       success: true,
-      message: otpResult?.emailDelivered
-        ? "OTP sent successfully. Please check your email."
-        : `OTP sent! (Verification Code: ${otpResult?.otp})`,
+      message: "OTP sent successfully to your email. Please check your inbox.",
       email,
-      otp: otpResult?.otp,
     });
 
   } catch (error) {

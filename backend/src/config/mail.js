@@ -7,14 +7,16 @@ console.log(
 );
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
   auth: {
-    user: process.env.EMAIL_USER,
+    user: process.env.EMAIL_USER || "chwaplatform@gmail.com",
     pass: process.env.EMAIL_PASS,
   },
-  connectionTimeout: 5000, // 5s connection timeout
-  greetingTimeout: 5000,   // 5s greeting timeout
-  socketTimeout: 5000,     // 5s socket timeout
+  connectionTimeout: 15000,
+  greetingTimeout: 15000,
+  socketTimeout: 15000,
 });
 
 export default transporter;
