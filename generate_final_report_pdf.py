@@ -1,9 +1,10 @@
 import os
 import re
+from PIL import Image as PILImage
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether, HRFlowable, Preformatted
+    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether, HRFlowable, Preformatted, Image
 )
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfgen import canvas
@@ -46,6 +47,23 @@ class UniversityNumberedCanvas(canvas.Canvas):
         self.line(45, 42, 567, 42)
         self.restoreState()
 
+def make_flowable_image(img_path, max_width=480, max_height=240):
+    if not os.path.exists(img_path):
+        return None
+    try:
+        with PILImage.open(img_path) as im:
+            orig_w, orig_h = im.size
+        aspect = orig_h / orig_w
+        w = min(max_width, orig_w)
+        h = w * aspect
+        if h > max_height:
+            h = max_height
+            w = h / aspect
+        return Image(img_path, width=w, height=h)
+    except Exception as e:
+        print(f"Error loading {img_path}: {e}")
+        return None
+
 def build_pdf():
     pdf_path = "Community_Health_Worker_Platform_Project_Report.pdf"
     doc = SimpleDocTemplate(
@@ -67,20 +85,21 @@ def build_pdf():
     border_color = colors.HexColor("#CBD5E1")
 
     # Typography styles
-    univ_header = ParagraphStyle('UnivHeader', fontName='Helvetica-Bold', fontSize=14, leading=18, alignment=1, textColor=slate_dark)
-    univ_sub = ParagraphStyle('UnivSub', fontName='Helvetica', fontSize=8.5, leading=12, alignment=1, textColor=colors.HexColor("#475569"))
+    univ_header = ParagraphStyle('UnivHeader', fontName='Helvetica-Bold', fontSize=13, leading=17, alignment=1, textColor=slate_dark)
+    univ_sub = ParagraphStyle('UnivSub', fontName='Helvetica', fontSize=8, leading=11.5, alignment=1, textColor=colors.HexColor("#475569"))
     
-    rep_title = ParagraphStyle('RepTitle', fontName='Helvetica-Bold', fontSize=18, leading=22, alignment=1, textColor=teal, spaceBefore=15, spaceAfter=8)
-    rep_sub = ParagraphStyle('RepSub', fontName='Helvetica-Bold', fontSize=11, leading=15, alignment=1, textColor=slate_dark, spaceAfter=15)
+    rep_title = ParagraphStyle('RepTitle', fontName='Helvetica-Bold', fontSize=17, leading=21, alignment=1, textColor=teal, spaceBefore=12, spaceAfter=6)
+    rep_sub = ParagraphStyle('RepSub', fontName='Helvetica-Bold', fontSize=10.5, leading=14, alignment=1, textColor=slate_dark, spaceAfter=12)
     
-    h1 = ParagraphStyle('H1', fontName='Helvetica-Bold', fontSize=12, leading=16, textColor=teal, spaceBefore=14, spaceAfter=6, keepWithNext=True)
-    h2 = ParagraphStyle('H2', fontName='Helvetica-Bold', fontSize=9.5, leading=13, textColor=slate_dark, spaceBefore=10, spaceAfter=4, keepWithNext=True)
+    h1 = ParagraphStyle('H1', fontName='Helvetica-Bold', fontSize=11.5, leading=15, textColor=teal, spaceBefore=12, spaceAfter=5, keepWithNext=True)
+    h2 = ParagraphStyle('H2', fontName='Helvetica-Bold', fontSize=9.5, leading=13, textColor=slate_dark, spaceBefore=9, spaceAfter=3, keepWithNext=True)
     h3 = ParagraphStyle('H3', fontName='Helvetica-Bold', fontSize=8.5, leading=12, textColor=teal_dark, spaceBefore=6, spaceAfter=2, keepWithNext=True)
     
     body = ParagraphStyle('Body', fontName='Helvetica', fontSize=8, leading=11.5, textColor=slate_text, spaceAfter=4)
     body_bold = ParagraphStyle('BodyBold', fontName='Helvetica-Bold', fontSize=8, leading=11.5, textColor=slate_dark, spaceAfter=4)
     center_text = ParagraphStyle('CenterText', fontName='Helvetica', fontSize=8, leading=11.5, alignment=1, textColor=slate_text)
     center_bold = ParagraphStyle('CenterBold', fontName='Helvetica-Bold', fontSize=8.5, leading=12, alignment=1, textColor=slate_dark)
+    caption_style = ParagraphStyle('Caption', fontName='Helvetica-Oblique', fontSize=7.5, leading=10.5, alignment=1, textColor=colors.HexColor("#475569"), spaceBefore=3, spaceAfter=8)
     
     th_style = ParagraphStyle('TH', fontName='Helvetica-Bold', fontSize=7, leading=9, textColor=colors.white)
     td_style = ParagraphStyle('TD', fontName='Helvetica', fontSize=7, leading=9, textColor=slate_text)
@@ -91,20 +110,26 @@ def build_pdf():
     story = []
 
     # ================= COVER PAGE =================
-    story.append(Spacer(1, 10))
-    story.append(Paragraph("PRESIDENCY UNIVERSITY", univ_header))
-    story.append(Paragraph("Private University Estd. in Karnataka State by Act No. 41 of 2013<br/>Itgalpura, Rajankunte, Yelahanka, Bengaluru – 560064", univ_sub))
+    banner_img = make_flowable_image("docs/figures/image1.png", max_width=420, max_height=80)
+    if banner_img:
+        story.append(banner_img)
+        story.append(Spacer(1, 8))
+    else:
+        story.append(Spacer(1, 10))
+        story.append(Paragraph("PRESIDENCY UNIVERSITY", univ_header))
+        story.append(Paragraph("Private University Estd. in Karnataka State by Act No. 41 of 2013<br/>Itgalpura, Rajankunte, Yelahanka, Bengaluru – 560064", univ_sub))
+    
     story.append(Paragraph("<b>PRESIDENCY SCHOOL OF COMPUTER SCIENCE AND ENGINEERING</b>", ParagraphStyle('SchoolH', fontName='Helvetica-Bold', fontSize=9, leading=13, alignment=1, textColor=slate_dark, spaceBefore=4)))
-    story.append(HRFlowable(width="100%", thickness=1.5, color=teal, spaceBefore=10, spaceAfter=15))
+    story.append(HRFlowable(width="100%", thickness=1.5, color=teal, spaceBefore=8, spaceAfter=12))
     
     story.append(Paragraph("COMMUNITY HEALTH WORKER ASSISTANCE PLATFORM", rep_title))
     story.append(Paragraph("A PROJECT REPORT", rep_sub))
-    story.append(Paragraph("Submitted in partial fulfillment of the requirements for the award of the degree of<br/><b>BACHELOR OF TECHNOLOGY IN INFORMATION SCIENCE AND ENGINEERING</b>", ParagraphStyle('Degree', fontName='Helvetica', fontSize=8.5, leading=13, alignment=1, textColor=slate_text, spaceAfter=20)))
+    story.append(Paragraph("Submitted in partial fulfillment of the requirements for the award of the degree of<br/><b>BACHELOR OF TECHNOLOGY IN INFORMATION SCIENCE AND ENGINEERING</b>", ParagraphStyle('Degree', fontName='Helvetica', fontSize=8.5, leading=13, alignment=1, textColor=slate_text, spaceAfter=15)))
     
     sub_table = [
         [Paragraph("<b>Submitted by:</b>", td_bold), Paragraph("<b>Under the guidance of:</b>", td_bold)],
         [
-            Paragraph("<b>ABHINAVA THUNGA K N</b> — 20231ISE0163<br/><b>SWASTIK VINAYAK HEGDE</b> — 20231ISE0153<br/><b>NAGARAJ SHRIPAD BHAT</b> — 20231ISE0166", td_style),
+            Paragraph("<b>SWASTIK VINAYAK HEGDE</b> — 20231ISE0153<br/><b>ABHINAVA THUNGA K N</b> — 20231ISE0163<br/><b>NAGARAJ SHRIPAD BHAT</b> — 20231ISE0166", td_style),
             Paragraph("<b>Mr. HRITIK KUMAR</b><br/>Assistant Professor, Department of ISE<br/>Presidency School of Computer Science & Engg.<br/>Presidency University, Bengaluru", td_style)
         ]
     ]
@@ -116,24 +141,28 @@ def build_pdf():
         ('PADDING', (0,0), (-1,-1), 8),
     ]))
     story.append(t_sub)
-    story.append(Spacer(1, 30))
-    story.append(Paragraph("<b>DEPARTMENT OF INFORMATION SCIENCE AND ENGINEERING</b><br/>PRESIDENCY UNIVERSITY, BENGALURU<br/><b>NOVEMBER 2026</b>", ParagraphStyle('FootC', fontName='Helvetica', fontSize=9, leading=14, alignment=1, textColor=slate_dark)))
+    story.append(Spacer(1, 24))
+    story.append(Paragraph("<b>DEPARTMENT OF INFORMATION SCIENCE AND ENGINEERING</b><br/>PRESIDENCY UNIVERSITY, BENGALURU<br/><b>DECEMBER 2026</b>", ParagraphStyle('FootC', fontName='Helvetica', fontSize=9, leading=14, alignment=1, textColor=slate_dark)))
     story.append(PageBreak())
 
     # ================= CERTIFICATES =================
-    story.append(Paragraph("PRESIDENCY UNIVERSITY", univ_header))
-    story.append(Paragraph("Private University Estd. in Karnataka State by Act No. 41 of 2013<br/>Itgalpura, Rajankunte, Yelahanka, Bengaluru – 560064", univ_sub))
-    story.append(HRFlowable(width="100%", thickness=1, color=teal, spaceBefore=6, spaceAfter=12))
-    story.append(Paragraph("<b>PRESIDENCY SCHOOL OF COMPUTER SCIENCE AND ENGINEERING</b>", ParagraphStyle('CertSchool', fontName='Helvetica-Bold', fontSize=10, leading=14, alignment=1, textColor=slate_dark)))
-    story.append(Paragraph("<b>BONAFIDE CERTIFICATE</b>", ParagraphStyle('CertTitle', fontName='Helvetica-Bold', fontSize=12, leading=16, alignment=1, textColor=teal, spaceBefore=4, spaceAfter=15)))
+    if banner_img:
+        story.append(make_flowable_image("docs/figures/image1.png", max_width=380, max_height=70))
+        story.append(Spacer(1, 6))
+    else:
+        story.append(Paragraph("PRESIDENCY UNIVERSITY", univ_header))
+        story.append(Paragraph("Private University Estd. in Karnataka State by Act No. 41 of 2013<br/>Itgalpura, Rajankunte, Yelahanka, Bengaluru – 560064", univ_sub))
+    story.append(HRFlowable(width="100%", thickness=1, color=teal, spaceBefore=4, spaceAfter=8))
+    story.append(Paragraph("<b>PRESIDENCY SCHOOL OF COMPUTER SCIENCE AND ENGINEERING</b>", ParagraphStyle('CertSchool', fontName='Helvetica-Bold', fontSize=9.5, leading=13, alignment=1, textColor=slate_dark)))
+    story.append(Paragraph("<b>BONAFIDE CERTIFICATE</b>", ParagraphStyle('CertTitle', fontName='Helvetica-Bold', fontSize=11, leading=15, alignment=1, textColor=teal, spaceBefore=3, spaceAfter=10)))
     
     story.append(Paragraph(
         "Certified that this report titled <b>“Community Health Worker Assistance Platform”</b> is a bonafide work carried out by "
-        "<b>Mr. Abhinava Thunga K N (20231ISE0163)</b>, <b>Mr. Swastik Vinayak Hegde (20231ISE0153)</b>, and <b>Mr. Nagaraj Shripad Bhat (20231ISE0166)</b>, "
+        "<b>Mr. Swastik Vinayak Hegde (20231ISE0153)</b>, <b>Mr. Abhinava Thunga K N (20231ISE0163)</b>, and <b>Mr. Nagaraj Shripad Bhat (20231ISE0166)</b>, "
         "who have successfully carried out the project work and submitted the report for partial fulfillment of the requirements for the award of the degree of "
         "<b>BACHELOR OF TECHNOLOGY in INFORMATION SCIENCE AND ENGINEERING</b> during the academic year 2026–27.", body
     ))
-    story.append(Spacer(1, 40))
+    story.append(Spacer(1, 25))
     
     sigs = [
         [Paragraph("<b>Mr. Hritik Kumar</b>", center_bold), Paragraph("<b>Ms. Sumita Guddin</b>", center_bold), Paragraph("<b>Dr. Gopal K Shyam</b>", center_bold)],
@@ -142,22 +171,22 @@ def build_pdf():
     t_sigs = Table(sigs, colWidths=[174, 174, 174])
     t_sigs.setStyle(TableStyle([('ALIGN', (0,0), (-1,-1), 'CENTER'), ('VALIGN', (0,0), (-1,-1), 'MIDDLE')]))
     story.append(t_sigs)
-    story.append(Spacer(1, 30))
-    story.append(HRFlowable(width="100%", thickness=0.5, color=border_color, spaceBefore=10, spaceAfter=15))
+    story.append(Spacer(1, 20))
+    story.append(HRFlowable(width="100%", thickness=0.5, color=border_color, spaceBefore=6, spaceAfter=10))
 
-    story.append(Paragraph("<b>CERTIFICATE OF VIVA-VOCE-EXAMINATION</b>", ParagraphStyle('VivaH', fontName='Helvetica-Bold', fontSize=11, leading=15, alignment=1, textColor=teal, spaceAfter=10)))
+    story.append(Paragraph("<b>CERTIFICATE OF VIVA-VOCE-EXAMINATION</b>", ParagraphStyle('VivaH', fontName='Helvetica-Bold', fontSize=10.5, leading=14, alignment=1, textColor=teal, spaceAfter=8)))
     story.append(Paragraph(
-        "This is to certify that <b>Mr. Abhinava Thunga K N (20231ISE0163)</b>, <b>Mr. Swastik Vinayak Hegde (20231ISE0153)</b>, and <b>Mr. Nagaraj Shripad Bhat (20231ISE0166)</b> "
+        "This is to certify that <b>Mr. Swastik Vinayak Hegde (20231ISE0153)</b>, <b>Mr. Abhinava Thunga K N (20231ISE0163)</b>, and <b>Mr. Nagaraj Shripad Bhat (20231ISE0166)</b> "
         "have been subjected to the Viva-voce Examination on <b>03-12-2026</b> at Presidency University, Bengaluru.", body
     ))
-    story.append(Spacer(1, 25))
+    story.append(Spacer(1, 15))
     viva_table = [
         [Paragraph("<b>Examiner-1:</b>", td_bold), Paragraph("<b>Examiner-2:</b>", td_bold)],
         [Paragraph("Name: ____________________________<br/>Designation: _____________________<br/>University/College: ______________", td_style),
          Paragraph("Name: ____________________________<br/>Designation: _____________________<br/>University/College: ______________", td_style)]
     ]
     t_viva = Table(viva_table, colWidths=[260, 262])
-    t_viva.setStyle(TableStyle([('BOX', (0,0), (-1,-1), 1, border_color), ('INNERGRID', (0,0), (-1,-1), 0.5, border_color), ('PADDING', (0,0), (-1,-1), 8)]))
+    t_viva.setStyle(TableStyle([('BOX', (0,0), (-1,-1), 1, border_color), ('INNERGRID', (0,0), (-1,-1), 0.5, border_color), ('PADDING', (0,0), (-1,-1), 7)]))
     story.append(t_viva)
     story.append(PageBreak())
 
@@ -165,34 +194,35 @@ def build_pdf():
     story.append(Paragraph("DECLARATION", h1))
     story.append(Paragraph(
         "We, the students of final year B.Tech in <b>INFORMATION SCIENCE AND ENGINEERING</b>, at Presidency University, Bengaluru, named "
-        "<b>ABHINAVA THUNGA K N (20231ISE0163)</b>, <b>SWASTIK VINAYAK HEGDE (20231ISE0153)</b>, and <b>NAGARAJ SHRIPAD BHAT (20231ISE0166)</b>, "
+        "<b>SWASTIK VINAYAK HEGDE (20231ISE0153)</b>, <b>ABHINAVA THUNGA K N (20231ISE0163)</b>, and <b>NAGARAJ SHRIPAD BHAT (20231ISE0166)</b>, "
         "hereby declare that the project work titled <b>“COMMUNITY HEALTH WORKER ASSISTANCE PLATFORM”</b> has been independently carried out by us "
         "and submitted in partial fulfillment for the award of the degree of B.Tech in Information Science and Engineering during the academic year 2026–27. "
         "Further, the matter embodied in the project has not been submitted previously by anybody for the award of any Degree or Diploma to any other institution.", body
     ))
-    story.append(Spacer(1, 15))
+    story.append(Spacer(1, 10))
     decl_table = [
-        [Paragraph("<b>Abhinava Thunga K N</b>", td_bold), Paragraph("20231ISE0163", td_style)],
         [Paragraph("<b>Swastik Vinayak Hegde</b>", td_bold), Paragraph("20231ISE0153", td_style)],
+        [Paragraph("<b>Abhinava Thunga K N</b>", td_bold), Paragraph("20231ISE0163", td_style)],
         [Paragraph("<b>Nagaraj Shripad Bhat</b>", td_bold), Paragraph("20231ISE0166", td_style)],
-        [Paragraph("<b>Place:</b> Bengaluru", td_style), Paragraph("<b>Date:</b> November 2026", td_style)]
+        [Paragraph("<b>Place:</b> Bengaluru", td_style), Paragraph("<b>Date:</b> December 2026", td_style)]
     ]
     t_decl = Table(decl_table, colWidths=[260, 262])
     story.append(t_decl)
-    story.append(Spacer(1, 15))
-    story.append(HRFlowable(width="100%", thickness=0.5, color=border_color, spaceBefore=5, spaceAfter=12))
+    story.append(Spacer(1, 12))
+    story.append(HRFlowable(width="100%", thickness=0.5, color=border_color, spaceBefore=4, spaceAfter=10))
 
     story.append(Paragraph("ACKNOWLEDGEMENT", h1))
     story.append(Paragraph(
         "For completing this project work, we have received the support and the guidance from many people whom we would like to mention with deep sense of gratitude and indebtedness. "
         "We extend our gratitude to our beloved <b>Chancellor</b>, <b>Vice Chancellor</b>, <b>Pro-Vice Chancellor</b>, and <b>Registrar</b> for their support and encouragement in completion of the project.<br/><br/>"
-        "We express our cordial thanks to <b>Dr. Duraipandian N</b>, Dean PSCS, Presidency School of Computer Science and Engineering and the Management of Presidency University for providing the required facilities and stimulating environment that aided in the completion of our project work.<br/><br/>"
+        "We express our cordial thanks to <b>Dr. Duraipandian N</b>, Dean PSCS, Presidency School of Computer Science and Engineering and the Management of Presidency University for providing the required facilities and intellectually stimulating environment that aided in the completion of our project work.<br/><br/>"
         "We are also thankful to <b>Dr. Gopal K Shyam</b>, Professor, Head of the Department, Presidency School of Computer Science and Engineering, Presidency University, for his mentorship and encouragement.<br/><br/>"
-        "We would like to sincerely thank our internal guide <b>Mr. Hritik Kumar</b>, Assistant Professor, Department of ISE, Presidency University, for his moral support, motivation, timely guidance and encouragement provided to us during the period of our project work.<br/><br/>"
-        "We are grateful to <b>Mr. Muthuraju V</b>, School Project Coordinator, and <b>Ms. Sumita Guddin</b>, Program Project Coordinator, for coordinating reviews, monitoring progress, and providing their valuable support and guidance.", body
+        "We would like to sincerely thank our internal guide <b>Mr. Hritik Kumar</b>, Assistant Professor, Presidency School of Computer Science and Engineering, Presidency University, for his moral support, motivation, timely guidance, and encouragement provided to us during the period of our project work.<br/><br/>"
+        "We are grateful to <b>Mr. Muthuraju V</b>, School Project Coordinator, and <b>Ms. Sumita Guddin</b>, Program Project Coordinator, Presidency School of Computer Science and Engineering, for facilitating problem statements, coordinating reviews, monitoring progress, and providing their valuable support and guidance.<br/><br/>"
+        "We are also grateful to the Teaching and Non-Teaching staff of Presidency School of Computer Science and Engineering and also staff from other departments who have extended their valuable help and cooperation.", body
     ))
-    story.append(Spacer(1, 15))
-    story.append(Paragraph("<b>ABHINAVA THUNGA K N &nbsp;&nbsp;|&nbsp;&nbsp; SWASTIK VINAYAK HEGDE &nbsp;&nbsp;|&nbsp;&nbsp; NAGARAJ SHRIPAD BHAT</b>", center_bold))
+    story.append(Spacer(1, 10))
+    story.append(Paragraph("<b>SWASTIK VINAYAK HEGDE &nbsp;&nbsp;|&nbsp;&nbsp; ABHINAVA THUNGA K N &nbsp;&nbsp;|&nbsp;&nbsp; NAGARAJ SHRIPAD BHAT</b>", center_bold))
     story.append(PageBreak())
 
     # ================= ABSTRACT =================
@@ -254,16 +284,24 @@ def build_pdf():
         [Paragraph("7", td_style), Paragraph("Figure 8.1", td_bold), Paragraph("System Operation Latency Benchmark and Synthetic Vignette Concordance", td_style), Paragraph("42", td_style)],
         [Paragraph("8", td_style), Paragraph("Figure 9.1", td_bold), Paragraph("Project Execution Schedule and Milestone Gantt Chart (July–November 2026)", td_style), Paragraph("47", td_style)],
         [Paragraph("9", td_style), Paragraph("Figure 9.2", td_bold), Paragraph("Clinical Workflow and Vitals Escalation Decision Tree", td_style), Paragraph("49", td_style)],
+        [Paragraph("10", td_style), Paragraph("Figure B.1", td_bold), Paragraph("Worker and Administrator Sign-In Portal", td_style), Paragraph("55", td_style)],
+        [Paragraph("11", td_style), Paragraph("Figure B.3", td_bold), Paragraph("Operational Field Analytics Dashboard", td_style), Paragraph("55", td_style)],
+        [Paragraph("12", td_style), Paragraph("Figure B.4", td_bold), Paragraph("Citizen Registry and Multi-Field Search View", td_style), Paragraph("55", td_style)],
+        [Paragraph("13", td_style), Paragraph("Figure B.5", td_bold), Paragraph("Priority-Driven Appointment Management View", td_style), Paragraph("56", td_style)],
+        [Paragraph("14", td_style), Paragraph("Figure B.6", td_bold), Paragraph("Multi-Vital Clinical Documentation and Health Records View", td_style), Paragraph("56", td_style)],
+        [Paragraph("15", td_style), Paragraph("Figure B.7", td_bold), Paragraph("AshaBot Frontline Clinical Decision Support Interface", td_style), Paragraph("56", td_style)],
+        [Paragraph("16", td_style), Paragraph("Figure C.1", td_bold), Paragraph("IEEE Conference Acceptance Proof (ICAIDS-PM-26, Kuala Lumpur, Malaysia)", td_style), Paragraph("57", td_style)],
+        [Paragraph("17", td_style), Paragraph("Figure C.2", td_bold), Paragraph("Paperpal Online Plagiarism Check Report (Verified 6% Similarity)", td_style), Paragraph("58", td_style)],
     ]
     t_fig = Table(fig_data, colWidths=[35, 65, 362, 60])
     t_fig.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), teal),
         ('BOX', (0,0), (-1,-1), 1, border_color),
         ('INNERGRID', (0,0), (-1,-1), 0.5, border_color),
-        ('PADDING', (0,0), (-1,-1), 3),
+        ('PADDING', (0,0), (-1,-1), 2.5),
     ]))
     story.append(t_fig)
-    story.append(Spacer(1, 15))
+    story.append(Spacer(1, 10))
 
     story.append(Paragraph("LIST OF TABLES", h1))
     tab_data = [
@@ -287,7 +325,7 @@ def build_pdf():
         [Paragraph("17", td_style), Paragraph("Table 8.2", td_bold), Paragraph("Comprehensive Security Assessment and Vulnerability Hardening Matrix", td_style), Paragraph("43", td_style)],
         [Paragraph("18", td_style), Paragraph("Table 8.3", td_bold), Paragraph("AI Evaluation Summary and Interpretation", td_style), Paragraph("44", td_style)],
         [Paragraph("19", td_style), Paragraph("Table 9.1", td_bold), Paragraph("Milestone Work Breakdown Structure and Deliverable Schedule", td_style), Paragraph("46", td_style)],
-        [Paragraph("20", td_style), Paragraph("Table C.1", td_bold), Paragraph("Mapping of Project Capabilities to UN Sustainable Development Goals (SDGs)", td_style), Paragraph("56", td_style)],
+        [Paragraph("20", td_style), Paragraph("Table C.1", td_bold), Paragraph("Mapping of Project Capabilities to UN Sustainable Development Goals (SDGs)", td_style), Paragraph("59", td_style)],
     ]
     t_tab = Table(tab_data, colWidths=[35, 65, 362, 60])
     t_tab.setStyle(TableStyle([
@@ -438,18 +476,52 @@ def build_pdf():
     story.append(Paragraph(
         "The platform implements a three-tier client-server architecture: (1) Presentation Tier in React 18 with Vite and React Router v6; (2) Application Tier in Node.js and Express 5; and (3) Persistence Tier in MongoDB Atlas with Mongoose 8. Crucially, the platform enforces a strict two-role model (<code>ADMIN</code> and <code>WORKER</code>) and mandates a unique <code>workerId</code> during registration.", body
     ))
+    
+    # Figure 4.1
+    fig4_1 = make_flowable_image("docs/figures/image3.jpg", max_width=360, max_height=200)
+    if fig4_1:
+        story.append(Spacer(1, 4))
+        story.append(fig4_1)
+        story.append(Paragraph("<b>Figure 4.1: Three-Tier RESTful Client-Server Architectural Block Diagram</b>", caption_style))
+    
     story.append(Paragraph("4.2 Operational Security, OTP & Admin Governance", h2))
     story.append(Paragraph(
         "Security is established via a multi-tiered pipeline: 6-digit email OTPs expire via a 600-second MongoDB TTL index, passwords are encrypted with 10-round salted Bcrypt digests, and session authorization uses HMAC-SHA256 JWTs. All newly registered accounts initialize in an inactive state (<code>isApproved: false, status: 'INACTIVE'</code>). The initial Administrator is approved in MongoDB Atlas; once active, administrators manage pending registrations, role toggles, and account statuses via the interactive <code>/admin</code> panel.", body
     ))
+    
+    # Figure 4.2
+    fig4_2 = make_flowable_image("docs/figures/image4.jpg", max_width=360, max_height=200)
+    if fig4_2:
+        story.append(Spacer(1, 4))
+        story.append(fig4_2)
+        story.append(Paragraph("<b>Figure 4.2: End-to-End Authentication and Registration Sequence Diagram</b>", caption_style))
+    
+    story.append(PageBreak())
+    
     story.append(Paragraph("4.3 Hybrid GenAI & Offline Decision Engine", h2))
     story.append(Paragraph(
         "Clinical consultations route through <code>POST /api/ai/chat</code>. The server validates JWT claims, strips direct patient PII, and calls Google Gemini LLM with candidate model progression. If connectivity is lost or times out, the local rule engine immediately evaluates systolic/diastolic blood pressure, SpO2, temperature, and danger keywords, returning an explicit triage tag in 4.2 ms.", body
     ))
-    story.append(Paragraph("4.4 Cloud Deployment on Render", h2))
+    
+    # Figure 4.3
+    fig4_3 = make_flowable_image("docs/figures/image5.jpg", max_width=440, max_height=180)
+    if fig4_3:
+        story.append(Spacer(1, 4))
+        story.append(fig4_3)
+        story.append(Paragraph("<b>Figure 4.3: Hybrid Cloud-Offline AI Clinical-Support Flow</b>", caption_style))
+
+    story.append(Paragraph("4.4 Cloud Deployment Architecture on Render", h2))
     story.append(Paragraph(
         "The unified application is deployed on Render PaaS (<code>https://community-healthworker-assistance.onrender.com/login</code>) with TLS 1.3 encryption, automatic base URL resolution (<code>/api</code> in production), pre-flight database readiness checks, and single-page routing fallbacks.", body
     ))
+    
+    # Figure 4.4
+    fig4_4 = make_flowable_image("docs/figures/image6.png", max_width=440, max_height=160)
+    if fig4_4:
+        story.append(Spacer(1, 4))
+        story.append(fig4_4)
+        story.append(Paragraph("<b>Figure 4.4: Render Cloud Production Deployment Topology</b>", caption_style))
+
     story.append(PageBreak())
 
     # ================= CHAPTER 5 & 6 =================
@@ -461,8 +533,16 @@ def build_pdf():
     
     story.append(Paragraph("CHAPTER 6: SYSTEM ARCHITECTURE & DATABASE DESIGN", h1))
     story.append(Paragraph(
-        "The MongoDB database architecture partitions entities into five collections: User, Patient, Appointment, HealthRecord, and AIConversation. Table 6.1 details the schema attributes for the User collection, reflecting the strict two-role model and compulsory <code>workerId</code>.", body
+        "The MongoDB database architecture partitions entities into five collections: User, Patient, Appointment, HealthRecord, and AIConversation. Figure 6.1 illustrates the entity associations.", body
     ))
+    
+    # Figure 6.1
+    fig6_1 = make_flowable_image("docs/figures/image7.jpg", max_width=350, max_height=180)
+    if fig6_1:
+        story.append(Spacer(1, 4))
+        story.append(fig6_1)
+        story.append(Paragraph("<b>Figure 6.1: Entity-Relationship and Schema Association Architecture Diagram</b>", caption_style))
+    
     story.append(Spacer(1, 4))
     
     t6_data = [
@@ -486,6 +566,20 @@ def build_pdf():
     ]))
     story.append(Paragraph("<b>Table 6.1: User Collection Schema Attributes and Constraints</b>", h3))
     story.append(t6_table)
+    story.append(Spacer(1, 6))
+
+    story.append(Paragraph("6.4 State Transition Modeling for Clinical Encounters", h2))
+    story.append(Paragraph(
+        "Appointments follow a formal finite state machine (SCHEDULED -> COMPLETED, or CANCELLED, or MISSED) with explicit timestamps and assigned worker attribution. Figure 6.2 models these lifecycle transitions.", body
+    ))
+    
+    # Figure 6.2
+    fig6_2 = make_flowable_image("docs/figures/image8.jpg", max_width=440, max_height=120)
+    if fig6_2:
+        story.append(Spacer(1, 4))
+        story.append(fig6_2)
+        story.append(Paragraph("<b>Figure 6.2: Appointment State Machine Transition Lifecycle Diagram</b>", caption_style))
+
     story.append(PageBreak())
 
     # ================= CHAPTER 7 =================
@@ -507,6 +601,7 @@ def build_pdf():
         [Paragraph("PUT", td_bold), Paragraph("/api/admin/users/:id/role", td_style), Paragraph("Protected (ADMIN)", td_style), Paragraph("Toggles user role between WORKER and ADMIN.", td_style)],
         [Paragraph("PUT", td_bold), Paragraph("/api/admin/users/:id/status", td_style), Paragraph("Protected (ADMIN)", td_style), Paragraph("Toggles account state between ACTIVE and SUSPENDED.", td_style)],
         [Paragraph("GET", td_bold), Paragraph("/api/patients/search", td_style), Paragraph("Protected", td_style), Paragraph("Sub-second regex query across name, phone, village.", td_style)],
+        [Paragraph("POST", td_bold), Paragraph("/api/appointments", td_style), Paragraph("Protected", td_style), Paragraph("Schedules encounter & auto-dispatches email confirmation.", td_style)],
         [Paragraph("DELETE", td_bold), Paragraph("/api/patients/:id", td_style), Paragraph("Protected", td_style), Paragraph("Cascading delete of patient, appointments, and vitals.", td_style)],
         [Paragraph("POST", td_bold), Paragraph("/api/health-records", td_style), Paragraph("Protected", td_style), Paragraph("Logs 7 physiological vitals & itemized drug array.", td_style)],
         [Paragraph("POST", td_bold), Paragraph("/api/ai/chat", td_style), Paragraph("Protected", td_style), Paragraph("Dual-path: Google Gemini LLM / offline rule parser.", td_style)],
@@ -528,21 +623,43 @@ def build_pdf():
         "Functional verification verified 100% pass rates across test scenarios including route protection, compulsory worker ID onboarding, admin approval queues, regex patient search (38.4 ms), multi-vital logging (26.1 ms), and offline triage execution (4.2 ms). In cross-mode validation across 50 synthetic clinical vignettes, the deterministic offline rule engine achieved 96.0% concordance (48/50) with cloud risk tags, establishing reliable clinical fallback.<br/><br/>"
         "Security hardening addressed OWASP Top-10 vulnerabilities: rate-limiting OTP guesses, bcrypt salted digests, stateless JWT RBAC, sanitization of regex searches, and automated pre-flight database connection detection.", body
     ))
-    story.append(Spacer(1, 6))
+    
+    # Figure 8.1
+    fig8_1 = make_flowable_image("docs/figures/image9.png", max_width=440, max_height=165)
+    if fig8_1:
+        story.append(Spacer(1, 4))
+        story.append(fig8_1)
+        story.append(Paragraph("<b>Figure 8.1: System Operation Latency Benchmark and Synthetic Vignette Concordance</b>", caption_style))
 
+    story.append(Spacer(1, 4))
     story.append(Paragraph("CHAPTER 9: PROJECT TIMELINE AND OUTCOMES", h1))
     story.append(Paragraph(
         "The project was executed across an 18-week agile engineering schedule from July 2026 to November 2026 across eight distinct milestones: T1 (Literature Survey), T2 (SRS & Schemas), T3 (Backend API & Auth), T4 (Frontend React SPA), T5 (Hybrid AI AshaBot), T6 (Admin Governance Panel), T7 (Cloud Deployment & Vignettes), and T8 (Thesis & Viva Preparation).", body
     ))
-    story.append(Spacer(1, 6))
+    
+    # Figure 9.1
+    fig9_1 = make_flowable_image("docs/figures/image10.png", max_width=440, max_height=160)
+    if fig9_1:
+        story.append(Spacer(1, 4))
+        story.append(fig9_1)
+        story.append(Paragraph("<b>Figure 9.1: Project Execution Schedule and Milestone Gantt Chart (July–November 2026)</b>", caption_style))
 
-    story.append(Paragraph("CHAPTER 10: CONCLUSION AND FUTURE WORK", h1))
-    story.append(Paragraph(
-        "The Community Health Worker Assistance Platform delivers an auditable, lightweight full-stack healthcare operating system deployed on Render cloud infrastructure that eliminates manual paper logbooks. Future enhancements will include offline-first Service Worker sync, regional vernacular localization (Kannada/Hindi), SMS appointment alerts, and formal ABDM ABHA sandbox interoperability.", body
-    ))
+    # Figure 9.2
+    fig9_2 = make_flowable_image("docs/figures/image11.png", max_width=440, max_height=150)
+    if fig9_2:
+        story.append(Spacer(1, 4))
+        story.append(fig9_2)
+        story.append(Paragraph("<b>Figure 9.2: Clinical Workflow and Vitals Escalation Decision Tree</b>", caption_style))
+
     story.append(PageBreak())
 
-    # ================= REFERENCES =================
+    # ================= CHAPTER 10 & REFERENCES =================
+    story.append(Paragraph("CHAPTER 10: CONCLUSION AND FUTURE WORK", h1))
+    story.append(Paragraph(
+        "The Community Health Worker Assistance Platform delivers an auditable, lightweight full-stack healthcare operating system deployed on Render cloud infrastructure that eliminates manual paper logbooks. Future enhancements will include offline-first Service Worker sync, regional vernacular localization (Kannada/Hindi), automated SMS appointment alerts, and formal ABDM ABHA sandbox interoperability.", body
+    ))
+    story.append(Spacer(1, 8))
+
     story.append(Paragraph("REFERENCES (IEEE STANDARD BIBLIOGRAPHY)", h1))
     refs = [
         "[1] S. Agarwal, H. B. Perry, L. A. Long, and A. B. Labrique, 'Evidence on feasibility and effective use of mHealth strategies by frontline health workers in developing countries: Systematic review,' Tropical Medicine & International Health, vol. 20, no. 8, pp. 1003–1014, Aug. 2015.",
@@ -574,7 +691,7 @@ def build_pdf():
         "[27] Nodemailer, 'Nodemailer SMTP Documentation,' 2026. [Online]. Available: https://nodemailer.com"
     ]
     for r in refs:
-        story.append(Paragraph(r, ParagraphStyle('RefStyle', fontName='Helvetica', fontSize=7, leading=9.5, textColor=slate_text, leftIndent=12, firstLineIndent=-12, spaceAfter=2.5)))
+        story.append(Paragraph(r, ParagraphStyle('RefStyle', fontName='Helvetica', fontSize=6.5, leading=8.5, textColor=slate_text, leftIndent=12, firstLineIndent=-12, spaceAfter=2)))
     story.append(PageBreak())
 
     # ================= APPENDICES =================
@@ -639,23 +756,130 @@ def build_pdf():
         "}"
     )
     story.append(Preformatted(p3, code_style))
-    story.append(Spacer(1, 8))
+    story.append(PageBreak())
 
+    # ================= APPENDIX-B: SCREENSHOTS =================
     story.append(Paragraph("APPENDIX-B: SCREENSHOTS", h1))
-    story.append(Paragraph("<b>B.1 Worker Login & Compulsory Worker ID Registration:</b> Live authentication portal at <code>https://community-healthworker-assistance.onrender.com/login</code> with role selection (WORKER vs. ADMIN), compulsory ASHA Worker ID / Employee ID, and 6-digit email OTP.", body))
-    story.append(Paragraph("<b>B.2 Dedicated Admin Governance Dashboard (/admin):</b> Management console where active administrators verify pending workers, approve accounts with 1-click, toggle roles, and monitor platform metrics.", body))
-    story.append(Paragraph("<b>B.3 Operational Field Analytics Dashboard:</b> Real-time dashboard showing total registered citizens, active cohorts, scheduled visits, and recorded vital logs.", body))
-    story.append(Paragraph("<b>B.4 Citizen Registry & Multi-Field Search View:</b> Indexed directory supporting sub-40 ms regex queries across names, phone numbers, and villages.", body))
-    story.append(Paragraph("<b>B.5 Multi-Vital Clinical Intake & Dynamic Prescription Builder:</b> Structured physiological intake form capturing 7 vitals with color-coded threshold alerts and itemized drug arrays.", body))
-    story.append(Paragraph("<b>B.6 AshaBot Hybrid Cloud & Offline Triage Panel:</b> Assistant conversation panel displaying explicit CLOUD / OFFLINE mode badges, triage tags, and human-review cues.", body))
-    story.append(Spacer(1, 8))
-
-    story.append(Paragraph("APPENDIX-C: ENCLOSURES", h1))
-    story.append(Paragraph("<b>1. Publication & Conference Proof:</b> Capstone paper prepared by Swastik Vinayak Hegde, Abhinava Thunga K N, and Nagaraj Shripad Bhat under guidance of Mr. Hritik Kumar.", body))
-    story.append(Paragraph("<b>2. Award & Exhibition Certificates:</b> Departmental Capstone Project Review and Exhibition recognitions awarded during Academic Year 2026–27.", body))
-    story.append(Paragraph("<b>3. Plagiarism Check Report:</b> Verified institutional similarity index below 15%, adhering to university academic integrity standards.", body))
-    story.append(Paragraph("<b>4. Sustainable Development Goals (SDGs) Mapping:</b> Table C.1 maps project capabilities to UN SDG 3 (Good Health and Well-Being), SDG 9 (Industry, Innovation, and Infrastructure), and SDG 10 (Reduced Inequalities).", body))
     
+    # Figure B.1
+    story.append(Paragraph("<b>Figure B.1: Worker and Administrator Sign-In Portal</b>", h2))
+    story.append(Paragraph("Live authentication portal at <code>https://community-healthworker-assistance.onrender.com/login</code> with role selection (WORKER vs. ADMIN), compulsory ASHA Worker Field ID / Employee ID, and 6-digit email OTP.", body))
+    fb1 = make_flowable_image("docs/figures/image12.png", max_width=440, max_height=180)
+    if fb1:
+        story.append(fb1)
+        story.append(Paragraph("<i>Figure B.1: Worker and Administrator Sign-In Portal</i>", caption_style))
+    story.append(Spacer(1, 6))
+
+    # Figure B.3
+    story.append(Paragraph("<b>Figure B.3: Operational Field Analytics Dashboard</b>", h2))
+    story.append(Paragraph("Real-time operational dashboard aggregating total registered citizens, active cohorts, scheduled visits, and recorded vital logs.", body))
+    fb3 = make_flowable_image("docs/figures/image13.png", max_width=440, max_height=180)
+    if fb3:
+        story.append(fb3)
+        story.append(Paragraph("<i>Figure B.3: Operational Field Analytics Dashboard</i>", caption_style))
+    story.append(PageBreak())
+
+    # Figure B.4
+    story.append(Paragraph("<b>Figure B.4: Citizen Registry and Multi-Field Search View</b>", h2))
+    story.append(Paragraph("Indexed citizen directory supporting sub-40 ms regex queries across names, phone numbers, and villages.", body))
+    fb4 = make_flowable_image("docs/figures/image14.png", max_width=440, max_height=180)
+    if fb4:
+        story.append(fb4)
+        story.append(Paragraph("<i>Figure B.4: Citizen Registry and Multi-Field Search View</i>", caption_style))
+    story.append(Spacer(1, 6))
+
+    # Figure B.5
+    story.append(Paragraph("<b>Figure B.5: Priority-Driven Appointment Management View</b>", h2))
+    story.append(Paragraph("Four-tier prioritized appointment management interface with automated patient email notifications upon scheduling.", body))
+    fb5 = make_flowable_image("docs/figures/image15.png", max_width=440, max_height=180)
+    if fb5:
+        story.append(fb5)
+        story.append(Paragraph("<i>Figure B.5: Priority-Driven Appointment Management View</i>", caption_style))
+    story.append(PageBreak())
+
+    # Figure B.6
+    story.append(Paragraph("<b>Figure B.6: Multi-Vital Clinical Documentation and Health Records View</b>", h2))
+    story.append(Paragraph("Structured physiological intake form capturing 7 vital signs with color-coded threshold alerts and dynamic prescription builder.", body))
+    fb6 = make_flowable_image("docs/figures/image16.png", max_width=440, max_height=180)
+    if fb6:
+        story.append(fb6)
+        story.append(Paragraph("<i>Figure B.6: Multi-Vital Clinical Documentation and Health Records View</i>", caption_style))
+    story.append(Spacer(1, 6))
+
+    # Figure B.7
+    story.append(Paragraph("<b>Figure B.7: AshaBot Frontline Clinical Decision Support Interface</b>", h2))
+    story.append(Paragraph("Assistant conversation panel displaying explicit CLOUD / OFFLINE mode badges, triage tags, and human-review boundaries.", body))
+    fb7 = make_flowable_image("docs/figures/image17.png", max_width=440, max_height=180)
+    if fb7:
+        story.append(fb7)
+        story.append(Paragraph("<i>Figure B.7: AshaBot Frontline Clinical Decision Support Interface</i>", caption_style))
+    story.append(PageBreak())
+
+    # ================= APPENDIX-C: ENCLOSURES =================
+    story.append(Paragraph("APPENDIX-C: ENCLOSURES", h1))
+    
+    # Enclosure 1
+    story.append(Paragraph("<b>1. IEEE Conference Acceptance Proof</b>", h2))
+    story.append(Paragraph(
+        "Official acceptance letter from the <b>International Conference on AI and Data Science for Personalized Medicine (ICAIDS-PM-26)</b> "
+        "organized by the Institute for Scientific and Engineering Research (ISER) held at Kuala Lumpur, Malaysia.<br/>"
+        "• <b>Paper ID:</b> ISER-10-30-00107995<br/>"
+        "• <b>Paper Title:</b> Community Health Worker Assistance Platform: A Secure and Hybrid GenAI-Enabled MERN Architecture for Field Health Management<br/>"
+        "• <b>Authors:</b> Nagaraj Shripad Bhat<br/>"
+        "• <b>Co-Authors:</b> Swastik Vinayak Hegde, Abhinava Thunga K N", body
+    ))
+    story.append(Spacer(1, 4))
+    enc1 = make_flowable_image("docs/figures/image18.jpeg", max_width=400, max_height=450)
+    if enc1:
+        story.append(enc1)
+        story.append(Paragraph("<i>Figure C.1: IEEE Conference Acceptance Proof (ICAIDS-PM-26, Kuala Lumpur, Malaysia)</i>", caption_style))
+    story.append(PageBreak())
+
+    # Enclosure 2
+    story.append(Paragraph("<b>2. Similarity Index / Plagiarism Check Report</b>", h2))
+    story.append(Paragraph(
+        "Institutional Plagiarism Check Summary via Paperpal Draft: <b>Overall Similarity Index verified at 6%</b>, comfortably complying with Presidency University's academic integrity standard threshold of &lt;15%.", body
+    ))
+    story.append(Spacer(1, 4))
+    enc2 = make_flowable_image("docs/figures/image19.jpeg", max_width=450, max_height=240)
+    if enc2:
+        story.append(enc2)
+        story.append(Paragraph("<i>Figure C.2: Paperpal Online Plagiarism Check Report (Verified 6% Similarity)</i>", caption_style))
+    story.append(Spacer(1, 10))
+
+    # Enclosure 3
+    story.append(Paragraph("<b>3. Sustainable Development Goals (SDGs) Mapping</b>", h2))
+    story.append(Paragraph("Table C.1 maps project capabilities to United Nations Sustainable Development Goals (SDGs).", body))
+    story.append(Spacer(1, 4))
+    
+    sdg_data = [
+        [Paragraph("<b>SDG Goal</b>", th_style), Paragraph("<b>Relevant UN Target</b>", th_style), Paragraph("<b>Platform Alignment & Measurable Contribution</b>", th_style)],
+        [
+            Paragraph("<b>SDG 3: Good Health and Well-Being</b>", td_bold),
+            Paragraph("Targets 3.1, 3.2, 3.8", td_style),
+            Paragraph("Digitizes longitudinal ANC/PNC tracking, immunization schedules, and multi-vital screening for rural ASHAs and ANMs.", td_style)
+        ],
+        [
+            Paragraph("<b>SDG 9: Industry, Innovation, and Infrastructure</b>", td_bold),
+            Paragraph("Target 9.c", td_style),
+            Paragraph("Provides a lightweight three-tier MERN web platform on Render cloud paired with a 4.2 ms zero-network offline triage parser.", td_style)
+        ],
+        [
+            Paragraph("<b>SDG 10: Reduced Inequalities</b>", td_bold),
+            Paragraph("Target 10.2", td_style),
+            Paragraph("Bridges the rural-urban clinical continuity gap with portable, auditable digital health records.", td_style)
+        ],
+    ]
+    t_sdg = Table(sdg_data, colWidths=[130, 110, 282])
+    t_sdg.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), teal),
+        ('BOX', (0,0), (-1,-1), 1, border_color),
+        ('INNERGRID', (0,0), (-1,-1), 0.5, border_color),
+        ('PADDING', (0,0), (-1,-1), 4),
+    ]))
+    story.append(Paragraph("<b>Table C.1: Mapping of Project Capabilities to UN Sustainable Development Goals (SDGs)</b>", h3))
+    story.append(t_sdg)
+
     doc.build(story, canvasmaker=UniversityNumberedCanvas)
     print("SUCCESS: University Project Report PDF generated at:", pdf_path)
 
