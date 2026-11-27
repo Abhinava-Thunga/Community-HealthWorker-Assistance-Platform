@@ -104,7 +104,7 @@ def build_pdf():
     sub_table = [
         [Paragraph("<b>Submitted by:</b>", td_bold), Paragraph("<b>Under the guidance of:</b>", td_bold)],
         [
-            Paragraph("<b>SWASTIK VINAYAK HEGDE</b> — 20231ISE0153<br/><b>ABHINAVA THUNGA K N</b> — 20231ISE0163<br/><b>NAGARAJ SHRIPAD BHAT</b> — 20231ISE0166", td_style),
+            Paragraph("<b>ABHINAVA THUNGA K N</b> — 20231ISE0163<br/><b>SWASTIK VINAYAK HEGDE</b> — 20231ISE0153<br/><b>NAGARAJ SHRIPAD BHAT</b> — 20231ISE0166", td_style),
             Paragraph("<b>Mr. HRITIK KUMAR</b><br/>Assistant Professor, Department of ISE<br/>Presidency School of Computer Science & Engg.<br/>Presidency University, Bengaluru", td_style)
         ]
     ]
@@ -129,7 +129,7 @@ def build_pdf():
     
     story.append(Paragraph(
         "Certified that this report titled <b>“Community Health Worker Assistance Platform”</b> is a bonafide work carried out by "
-        "<b>Mr. Swastik Vinayak Hegde (20231ISE0153)</b>, <b>Mr. Abhinava Thunga K N (20231ISE0163)</b>, and <b>Mr. Nagaraj Shripad Bhat (20231ISE0166)</b>, "
+        "<b>Mr. Abhinava Thunga K N (20231ISE0163)</b>, <b>Mr. Swastik Vinayak Hegde (20231ISE0153)</b>, and <b>Mr. Nagaraj Shripad Bhat (20231ISE0166)</b>, "
         "who have successfully carried out the project work and submitted the report for partial fulfillment of the requirements for the award of the degree of "
         "<b>BACHELOR OF TECHNOLOGY in INFORMATION SCIENCE AND ENGINEERING</b> during the academic year 2026–27.", body
     ))
@@ -147,7 +147,7 @@ def build_pdf():
 
     story.append(Paragraph("<b>CERTIFICATE OF VIVA-VOCE-EXAMINATION</b>", ParagraphStyle('VivaH', fontName='Helvetica-Bold', fontSize=11, leading=15, alignment=1, textColor=teal, spaceAfter=10)))
     story.append(Paragraph(
-        "This is to certify that <b>Mr. Swastik Vinayak Hegde (20231ISE0153)</b>, <b>Mr. Abhinava Thunga K N (20231ISE0163)</b>, and <b>Mr. Nagaraj Shripad Bhat (20231ISE0166)</b> "
+        "This is to certify that <b>Mr. Abhinava Thunga K N (20231ISE0163)</b>, <b>Mr. Swastik Vinayak Hegde (20231ISE0153)</b>, and <b>Mr. Nagaraj Shripad Bhat (20231ISE0166)</b> "
         "have been subjected to the Viva-voce Examination on <b>03-12-2026</b> at Presidency University, Bengaluru.", body
     ))
     story.append(Spacer(1, 25))
@@ -165,15 +165,15 @@ def build_pdf():
     story.append(Paragraph("DECLARATION", h1))
     story.append(Paragraph(
         "We, the students of final year B.Tech in <b>INFORMATION SCIENCE AND ENGINEERING</b>, at Presidency University, Bengaluru, named "
-        "<b>SWASTIK VINAYAK HEGDE (20231ISE0153)</b>, <b>ABHINAVA THUNGA K N (20231ISE0163)</b>, and <b>NAGARAJ SHRIPAD BHAT (20231ISE0166)</b>, "
+        "<b>ABHINAVA THUNGA K N (20231ISE0163)</b>, <b>SWASTIK VINAYAK HEGDE (20231ISE0153)</b>, and <b>NAGARAJ SHRIPAD BHAT (20231ISE0166)</b>, "
         "hereby declare that the project work titled <b>“COMMUNITY HEALTH WORKER ASSISTANCE PLATFORM”</b> has been independently carried out by us "
         "and submitted in partial fulfillment for the award of the degree of B.Tech in Information Science and Engineering during the academic year 2026–27. "
         "Further, the matter embodied in the project has not been submitted previously by anybody for the award of any Degree or Diploma to any other institution.", body
     ))
     story.append(Spacer(1, 15))
     decl_table = [
-        [Paragraph("<b>Swastik Vinayak Hegde</b>", td_bold), Paragraph("20231ISE0153", td_style)],
         [Paragraph("<b>Abhinava Thunga K N</b>", td_bold), Paragraph("20231ISE0163", td_style)],
+        [Paragraph("<b>Swastik Vinayak Hegde</b>", td_bold), Paragraph("20231ISE0153", td_style)],
         [Paragraph("<b>Nagaraj Shripad Bhat</b>", td_bold), Paragraph("20231ISE0166", td_style)],
         [Paragraph("<b>Place:</b> Bengaluru", td_style), Paragraph("<b>Date:</b> November 2026", td_style)]
     ]
@@ -192,7 +192,7 @@ def build_pdf():
         "We are grateful to <b>Mr. Muthuraju V</b>, School Project Coordinator, and <b>Ms. Sumita Guddin</b>, Program Project Coordinator, for coordinating reviews, monitoring progress, and providing their valuable support and guidance.", body
     ))
     story.append(Spacer(1, 15))
-    story.append(Paragraph("<b>SWASTIK VINAYAK HEGDE &nbsp;&nbsp;|&nbsp;&nbsp; ABHINAVA THUNGA K N &nbsp;&nbsp;|&nbsp;&nbsp; NAGARAJ SHRIPAD BHAT</b>", center_bold))
+    story.append(Paragraph("<b>ABHINAVA THUNGA K N &nbsp;&nbsp;|&nbsp;&nbsp; SWASTIK VINAYAK HEGDE &nbsp;&nbsp;|&nbsp;&nbsp; NAGARAJ SHRIPAD BHAT</b>", center_bold))
     story.append(PageBreak())
 
     # ================= ABSTRACT =================

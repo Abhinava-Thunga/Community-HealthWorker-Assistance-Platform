@@ -24,6 +24,7 @@ const Appointments = ({ onLogout }) => {
 
   const [formData, setFormData] = useState({
     patientId: "",
+    patientEmail: "",
     appointmentDate: new Date().toISOString().split("T")[0],
     timeSlot: "10:00 AM",
     purpose: "",
@@ -89,7 +90,16 @@ const Appointments = ({ onLogout }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "patientId") {
+      const selected = patients.find((p) => p._id === value);
+      setFormData((prev) => ({
+        ...prev,
+        patientId: value,
+        patientEmail: selected?.email || "",
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleScheduleSubmit = async (e) => {
@@ -105,11 +115,14 @@ const Appointments = ({ onLogout }) => {
 
     try {
       setScheduling(true);
-      await api.post("/appointments", formData);
-      showToast("Appointment scheduled successfully! 🗓️", "success");
+      const res = await api.post("/appointments", formData);
+      const successMsg =
+        res.data?.message || "Appointment scheduled successfully! 🗓️";
+      showToast(successMsg, "success");
       setShowScheduleModal(false);
       setFormData({
         patientId: "",
+        patientEmail: "",
         appointmentDate: new Date().toISOString().split("T")[0],
         timeSlot: "10:00 AM",
         purpose: "",
@@ -503,10 +516,28 @@ const Appointments = ({ onLogout }) => {
                   <option value="">-- Choose Patient --</option>
                   {patients.map((p) => (
                     <option key={p._id} value={p._id}>
-                      {p.fullName} ({p.phone} • {p.village || "No Village"})
+                      {p.fullName} ({p.phone} • {p.village || "No Village"}{p.email ? ` • ✉️ ${p.email}` : ""})
                     </option>
                   ))}
                 </select>
+              </div>
+
+              <div className="form-group">
+                <label>
+                  Patient Email Notification
+                </label>
+                <input
+                  type="email"
+                  name="patientEmail"
+                  placeholder="patient@example.com (sends date, time & place to patient)"
+                  value={formData.patientEmail}
+                  onChange={handleInputChange}
+                />
+                <small style={{ color: "#0d9488", fontSize: "12px", marginTop: "4px", display: "block" }}>
+                  {formData.patientEmail
+                    ? "📧 Confirmation email with date, time, and location will be automatically sent to this address."
+                    : "ℹ️ If patient email is provided, an appointment confirmation email will be sent automatically."}
+                </small>
               </div>
 
               <div className="form-row">
@@ -692,6 +723,7 @@ const Appointments = ({ onLogout }) => {
                     {selectedAppointment.patient?.gender} •{" "}
                     {selectedAppointment.patient?.age} Years •{" "}
                     {selectedAppointment.patient?.phone}
+                    {selectedAppointment.patient?.email ? ` • ✉️ ${selectedAppointment.patient.email}` : ""}
                   </p>
                   <p className="village-badge">
                     🏡 {selectedAppointment.patient?.village || "Community"}

@@ -12,8 +12,8 @@ Submitted in partial fulfillment of the requirements for the award of the degree
 **BACHELOR OF TECHNOLOGY IN INFORMATION SCIENCE AND ENGINEERING**
 
 **Submitted by:**
-- **SWASTIK VINAYAK HEGDE** — 20231ISE0153
 - **ABHINAVA THUNGA K N** — 20231ISE0163
+- **SWASTIK VINAYAK HEGDE** — 20231ISE0153
 - **NAGARAJ SHRIPAD BHAT** — 20231ISE0166
 
 **Under the guidance of:**  
@@ -29,7 +29,7 @@ Presidency University, Bengaluru
 ## PRESIDENCY SCHOOL OF COMPUTER SCIENCE AND ENGINEERING
 ### BONAFIDE CERTIFICATE
 
-Certified that this report titled **“Community Health Worker Assistance Platform”** is a bonafide work carried out by **Mr. Swastik Vinayak Hegde (20231ISE0153)**, **Mr. Abhinava Thunga K N (20231ISE0163)**, and **Mr. Nagaraj Shripad Bhat (20231ISE0166)**, who have successfully carried out the project work and submitted the report for partial fulfillment of the requirements for the award of the degree of **BACHELOR OF TECHNOLOGY in INFORMATION SCIENCE AND ENGINEERING** during the academic year 2026–27.
+Certified that this report titled **“Community Health Worker Assistance Platform”** is a bonafide work carried out by **Mr. Abhinava Thunga K N (20231ISE0163)**, **Mr. Swastik Vinayak Hegde (20231ISE0153)**, and **Mr. Nagaraj Shripad Bhat (20231ISE0166)**, who have successfully carried out the project work and submitted the report for partial fulfillment of the requirements for the award of the degree of **BACHELOR OF TECHNOLOGY in INFORMATION SCIENCE AND ENGINEERING** during the academic year 2026–27.
 
 | **Mr. Hritik Kumar** | **Ms. Sumita Guddin** | **Dr. Gopal K Shyam** |
 | :--- | :--- | :--- |
@@ -41,7 +41,7 @@ Certified that this report titled **“Community Health Worker Assistance Platfo
 ## PRESIDENCY SCHOOL OF COMPUTER SCIENCE AND ENGINEERING
 ### CERTIFICATE OF VIVA-VOCE-EXAMINATION
 
-This is to certify that **Mr. Swastik Vinayak Hegde (20231ISE0153)**, **Mr. Abhinava Thunga K N (20231ISE0163)**, and **Mr. Nagaraj Shripad Bhat (20231ISE0166)** have been subjected to the Viva-voce Examination on **03-12-2026** at Presidency University, Bengaluru.
+This is to certify that **Mr. Abhinava Thunga K N (20231ISE0163)**, **Mr. Swastik Vinayak Hegde (20231ISE0153)**, and **Mr. Nagaraj Shripad Bhat (20231ISE0166)** have been subjected to the Viva-voce Examination on **03-12-2026** at Presidency University, Bengaluru.
 
 | **Examiner-1** | **Examiner-2** |
 | :--- | :--- |
@@ -53,11 +53,11 @@ This is to certify that **Mr. Swastik Vinayak Hegde (20231ISE0153)**, **Mr. Abhi
 
 ## DECLARATION
 
-We, the students of final year B.Tech in **INFORMATION SCIENCE AND ENGINEERING**, at Presidency University, Bengaluru, named **SWASTIK VINAYAK HEGDE (20231ISE0153)**, **ABHINAVA THUNGA K N (20231ISE0163)**, and **NAGARAJ SHRIPAD BHAT (20231ISE0166)**, hereby declare that the project work titled **“COMMUNITY HEALTH WORKER ASSISTANCE PLATFORM”** has been independently carried out by us and submitted in partial fulfillment for the award of the degree of **B.Tech in INFORMATION SCIENCE AND ENGINEERING** during the academic year 2026–27. Further, the matter embodied in the project has not been submitted previously by anybody for the award of any Degree or Diploma to any other institution.
+We, the students of final year B.Tech in **INFORMATION SCIENCE AND ENGINEERING**, at Presidency University, Bengaluru, named **ABHINAVA THUNGA K N (20231ISE0163)**, **SWASTIK VINAYAK HEGDE (20231ISE0153)**, and **NAGARAJ SHRIPAD BHAT (20231ISE0166)**, hereby declare that the project work titled **“COMMUNITY HEALTH WORKER ASSISTANCE PLATFORM”** has been independently carried out by us and submitted in partial fulfillment for the award of the degree of **B.Tech in INFORMATION SCIENCE AND ENGINEERING** during the academic year 2026–27. Further, the matter embodied in the project has not been submitted previously by anybody for the award of any Degree or Diploma to any other institution.
 
-- **Swastik Vinayak Hegde** — 20231ISE0153  
 - **Abhinava Thunga K N** — 20231ISE0163  
-- **NAGARAJ SHRIPAD BHAT** — 20231ISE0166  
+- **Swastik Vinayak Hegde** — 20231ISE0153  
+- **Nagaraj Shripad Bhat** — 20231ISE0166  
 
 **PLACE:** BENGALURU  
 **DATE:** NOVEMBER 2026  
@@ -78,8 +78,8 @@ We are grateful to **Mr. Muthuraju V**, School Project Coordinator, and **Ms. Su
 
 We are also grateful to the Teaching and Non-Teaching staff of Presidency School of Computer Science and Engineering and also staff from other departments who have extended their valuable help and cooperation.
 
-**SWASTIK VINAYAK HEGDE**  
 **ABHINAVA THUNGA K N**  
+**SWASTIK VINAYAK HEGDE**  
 **NAGARAJ SHRIPAD BHAT**  
 
 ---
